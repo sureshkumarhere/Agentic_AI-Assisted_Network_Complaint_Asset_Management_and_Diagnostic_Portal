@@ -1,6 +1,7 @@
 // import React, { useState } from 'react';
 // import { LocationOption, ProblemType, ProblemTypeOption } from '../../types';
 // import { Sparkles, Send, CheckCircle, AlertCircle } from 'lucide-react';
+// import { InternetTroubleshootingGuide } from '../troubleshooting/InternetTroubleshootingGuide';
 
 // interface ComplaintFormProps {
 //   locations: LocationOption[];
@@ -32,6 +33,7 @@
 //     honeypot: ''
 //   });
 
+//   const [errors, setErrors] = useState<Record<string, string>>({});
 //   const [errors, setErrors] = useState<Record<string, string>>({});
 //   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -682,6 +684,7 @@
 import React, { useState } from 'react';
 import { LocationOption, ProblemType, ProblemTypeOption } from '../../types';
 import { Sparkles, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { InternetTroubleshootingGuide } from '../troubleshooting/InternetTroubleshootingGuide';
 
 interface ComplaintFormProps {
   locations: LocationOption[];
@@ -722,6 +725,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     honeypot: ''
   });
 
+  const [troubleshootingAcknowledged, setTroubleshootingAcknowledged] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -777,6 +781,10 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
       newErrors.preferred_to = 'End time must be later than start time';
     }
 
+    if (!troubleshootingAcknowledged) {
+      newErrors.acknowledged = 'You must confirm that you have followed the self-troubleshooting steps before submitting a complaint.';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -791,9 +799,26 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     <div className="w-full min-h-screen bg-white">
       {/* Main Content */}
       <main className="w-full max-w-[800px] mx-auto px-4 pt-14 pb-10">
-        <h1 className="text-2xl font-bold text-slate-900 pb-3 border-b border-slate-200 mb-5">
-          Submit Complaint
-        </h1>
+        <div className="pb-3 border-b border-slate-200 mb-5">
+          <h1 className="text-2xl font-bold text-slate-900">
+            Submit Complaint
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            MNNIT Allahabad Network Services & Diagnostic Portal
+          </p>
+        </div>
+
+        {/* Network Team Internet Troubleshooting Guide */}
+        <InternetTroubleshootingGuide
+          acknowledged={troubleshootingAcknowledged}
+          onAcknowledgeChange={(checked) => {
+            setTroubleshootingAcknowledged(checked);
+            if (errors.acknowledged) {
+              setErrors((prev) => ({ ...prev, acknowledged: '' }));
+            }
+          }}
+          error={errors.acknowledged}
+        />
 
         {/* AI Pre-fill Toast Banner */}
         {toastMessage && (
@@ -981,18 +1006,64 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
             </div> */}
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center justify-center gap-2 px-3 py-2 min-w-[72px] bg-[#007bff] hover:bg-[#0069d9] text-white text-[14px] rounded transition-colors disabled:opacity-50"
-          >
-            {isSubmitting ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <span>Submit</span>
+          {/* Mandatory Troubleshooting Acknowledgment */}
+          <div className={`p-3.5 rounded-lg border transition-all ${
+            troubleshootingAcknowledged
+              ? 'bg-emerald-50/70 border-emerald-200'
+              : errors.acknowledged
+                ? 'bg-red-50 border-red-200'
+                : 'bg-amber-50/80 border-amber-200'
+          }`}>
+            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={troubleshootingAcknowledged}
+                onChange={(e) => {
+                  setTroubleshootingAcknowledged(e.target.checked);
+                  if (errors.acknowledged) {
+                    setErrors((prev) => ({ ...prev, acknowledged: '' }));
+                  }
+                }}
+                className="mt-0.5 w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer shrink-0"
+              />
+              <div>
+                <span className="text-[13px] font-bold text-slate-800 flex items-center gap-1">
+                  <span>I have verified and completed the troubleshooting steps above</span>
+                  <span className="text-red-500">*</span>
+                </span>
+                <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                  I confirm that I have checked the room static IP, tested core switch connectivity (<code className="font-mono bg-slate-200/80 px-1 py-0.2 rounded text-[10px]">ping 172.31.100.1</code>), and verified campus proxy settings, but the internet connection is still not working.
+                </p>
+              </div>
+            </label>
+            {errors.acknowledged && (
+              <p className="text-[11px] text-red-600 font-medium mt-1.5 ml-6 flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{errors.acknowledged}</span>
+              </p>
             )}
-          </button>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex items-center gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={isSubmitting || !troubleshootingAcknowledged}
+              title={!troubleshootingAcknowledged ? 'Please check the troubleshooting acknowledgment above to submit' : undefined}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#007bff] hover:bg-[#0069d9] text-white text-[14px] font-semibold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            >
+              {isSubmitting ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span>Submit Complaint</span>
+              )}
+            </button>
+            {!troubleshootingAcknowledged && (
+              <span className="text-[11px] text-slate-400">
+                (Acknowledgment required to enable submission)
+              </span>
+            )}
+          </div>
         </form>
       </main>
     </div>
