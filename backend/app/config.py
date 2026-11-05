@@ -6,8 +6,10 @@ Pydantic Settings, providing type verification and default values for local deve
 Key Configurations:
 - Database connection (MongoDB URI and database name)
 - Staff authentication & JWT security
-- Multi-provider LLM & Vector Store settings
+- Multi-provider LLM & Vector Store settings (Gemini, OpenAI, Grok, Anthropic, Mock)
+- Flow Trace settings (FLOW_TRACE, FLOW_TRACE_SLOW_MS)
 - Complaint Management (Part 2) OTP, email, auto-close, and scoring settings
+- Application rules (Max chat messages limit, upload file size cap)
 """
 
 import os
@@ -110,6 +112,10 @@ class Settings(BaseSettings):
     GROK_MODEL: str = "grok-beta"
     LLM_MODEL_CHAT: str = "claude-3-5-sonnet-20241022"
     LLM_MODEL_GUARD: str = "claude-3-5-haiku-20241022"
+
+    # Flow Trace Configuration
+    FLOW_TRACE: bool = True
+    FLOW_TRACE_SLOW_MS: float = 3000.0
 
     # Vector Store & Embeddings Settings
     EMBEDDING_PROVIDER: str = "local"

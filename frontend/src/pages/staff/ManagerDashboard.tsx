@@ -2,6 +2,8 @@
 // Manager Dashboard page providing complaint queues, assignment, technician status, reports, and leaderboard.
 
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { fetchCurrentStaff } from '../../api/auth';
 import {
   fetchManagerSummary,
   fetchManagerComplaints,
@@ -28,7 +30,8 @@ import {
   LogOut,
   Shield,
   MapPin,
-  AlertTriangle
+  AlertTriangle,
+  ArrowLeft
 } from 'lucide-react';
 
 import logo from '../../assets/logo.jpeg'
@@ -56,7 +59,18 @@ export const ManagerDashboard: React.FC = () => {
   const [reports, setReports] = useState<any>(null);
   const [reportRange, setReportRange] = useState('today');
 
-  const userRole = localStorage.getItem('staff_role') || 'MANAGER';
+  const [userRole, setUserRole] = useState<string>(() => localStorage.getItem('staff_role') || 'MANAGER');
+
+  useEffect(() => {
+    fetchCurrentStaff()
+      .then((user) => {
+        if (user?.role) {
+          setUserRole(user.role);
+          localStorage.setItem('staff_role', user.role);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const loadData = () => {
     setLoading(true);
@@ -140,6 +154,15 @@ export const ManagerDashboard: React.FC = () => {
       <header className="bg-mnnit-blue text-white shadow-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {userRole === 'ADMIN' && (
+              <Link
+                to="/admin"
+                className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                title="Back to Admin Dashboard"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+            )}
             <img
               src={logo}
               alt="MNNIT Allahabad Logo"
@@ -152,12 +175,12 @@ export const ManagerDashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <a
-              href="/admin/network-assets"
+            <Link
+              to="/admin/network-assets"
               className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold border border-white/20 transition-colors"
             >
-              Network Assets (Read-Only)
-            </a>
+              Network Assets {userRole === 'ADMIN' ? '' : '(Read-Only)'}
+            </Link>
             <button
               onClick={handleLogout}
               className="p-2 bg-white/10 hover:bg-red-500/80 rounded-xl text-white transition-colors"
