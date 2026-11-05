@@ -7,6 +7,9 @@ Integrates per-request FlowTrace timing steps.
 """
 
 import os
+import logging
+
+logger = logging.getLogger("chat_service")
 from datetime import datetime
 from typing import Dict, Any, Tuple, Optional
 from bson import ObjectId
@@ -153,9 +156,29 @@ async def process_chat_message(chat_id: str, user_content: str) -> Tuple[Dict[st
             "messages_remaining": settings.MAX_CHAT_MESSAGES - new_count
         }, 200
 
-    # Step 4: rag.retrieve (handled in retrieve_context)
+    # Step 2: On-topic -> Contextual Query Reformulation & RAG Retrieval
+    # Build history turns first for multi-turn contextual retrieval
+    history = []
+    if chat:
+        for msg in chat.get("messages", [])[-6:]:  # recent 3 turns
+            history.append({"role": msg["role"], "content": msg["content"]})
+
+    # Two-Step Query Rewriting: Contextual Query Reformulation
+    # Reformulates both initial queries (translating Hinglish/informal symptoms to technical terms)
+    # and follow-up turns (resolving pronouns from history)
+    search_query = user_content_clean
+    try:
+        rewritten = await llm_router.contextualize_query(user_content_clean, history)
+        if rewritten and rewritten.strip():
+            search_query = rewritten.strip()
+            logger.info(f"[ChatService] Query reformulated: '{user_content_clean}' -> '{search_query}'")
+    except Exception as e:
+        logger.warning(f"[ChatService] Query contextualization failed: {e}. Using raw query.")
+        search_query = user_content_clean
+
+    # Step 4: rag.retrieve (handled in retrieve_context with trace)
     category_slug = chat.get("reference_category_slug") if chat else None
-    retrieved_chunks = retrieve_context(query=user_content_clean, category_slug=category_slug, top_k=6)
+    retrieved_chunks = retrieve_context(query=search_query, category_slug=category_slug, top_k=6)
 
     context_str = ""
     source_doc_ids = []
@@ -177,11 +200,6 @@ async def process_chat_message(chat_id: str, user_content: str) -> Tuple[Dict[st
         system_prompt = system_template.format(retrieved_chunks=context_str if context_str else "No context found.")
         if hasattr(prompt_step, "add"):
             prompt_step.add(chars=len(system_prompt))
-
-    history = []
-    if chat:
-        for msg in chat.get("messages", [])[-6:]:
-            history.append({"role": msg["role"], "content": msg["content"]})
 
     # Step 6: llm.generate
     gen_step = trace.step("llm.generate") if trace else DummyStepContext()

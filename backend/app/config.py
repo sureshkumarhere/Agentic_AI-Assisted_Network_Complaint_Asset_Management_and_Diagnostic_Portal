@@ -5,14 +5,16 @@ Pydantic Settings, providing type verification and default values for local deve
 
 Key Configurations:
 - Database connection (MongoDB URI and database name)
-- Admin authentication parameters (username, bcrypt password hash, JWT secret)
+- Staff authentication & JWT security
 - Multi-provider LLM & Vector Store settings (Gemini, OpenAI, Grok, Anthropic, Mock)
 - Flow Trace settings (FLOW_TRACE, FLOW_TRACE_SLOW_MS)
+- Complaint Management (Part 2) OTP, email, auto-close, and scoring settings
 - Application rules (Max chat messages limit, upload file size cap)
 """
 
 import os
 from typing import List
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,19 +25,78 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     COLLEGE_NAME: str = "MNNIT Allahabad"
     FRONTEND_ORIGIN: str = "http://localhost:5173"
+    PUBLIC_BASE_URL: str = "http://localhost:5173"
+    APP_TIMEZONE: str = "Asia/Kolkata"
 
     # MongoDB Settings
     MONGODB_URI: str = "mongodb://localhost:27017"
     MONGODB_DB_NAME: str = "network_portal"
 
     # Authentication & JWT Security
-    ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD_HASH: str = "$2b$12$z11TCwrLVRnlzFvMTKV2suLuuSeDTrATQJN2.b0ZARDdcuzbnyyhm"
     JWT_SECRET: str = "mnnit-network-portal-jwt-secret-key-32bytes-min"
     JWT_EXPIRE_HOURS: int = 8
+    LOGIN_MAX_FAILURES: int = 5
+    LOGIN_LOCK_MINUTES: int = 15
+
+    # OTP Registration Settings
+    ALLOWED_EMAIL_DOMAIN: str = "mnnit.ac.in"
+    OTP_SECRET: str = "mnnit-otp-secret-key-32bytes-min"
+    OTP_EXPIRE_MINUTES: int = 10
+    OTP_MAX_ATTEMPTS: int = 5
+    OTP_RESEND_SECONDS: int = 60
+    OTP_MAX_RESENDS: int = 3
+    OTP_MAX_REQUESTS_PER_EMAIL_PER_HOUR: int = 5
+
+    # Lifecycle & Confirmation Token Settings
+    AUTO_CLOSE_DAYS: int = 3
+    AUTO_CLOSE_CHECK_MINUTES: int = 30
+    ACTION_TOKEN_EXPIRY_DAYS: int = 14
+
+    # Email & SMTP Settings
+    EMAIL_BACKEND: str = "console"  # console | smtp
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 25
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_USE_TLS: bool = False
+    EMAIL_FROM: str = "noreply@mnnit.ac.in"
+    INCHARGE_CC_EMAILS: str = ""
+
+    # Leaderboard Scoring Settings
+    SCORE_FORMULA: str = "average"  # average | weighted
+    SCORE_PRIOR_MEAN: float = 3.5
+    SCORE_PRIOR_COUNT: float = 5.0
+
+    # Module 2 Agentic AI Settings
+    AGENT_ENABLED: bool = True
+    AGENT_ASSIGNMENT_MODE: str = "auto"  # auto | suggest | off
+
+    @field_validator("AGENT_ASSIGNMENT_MODE")
+    @classmethod
+    def validate_assignment_mode(cls, v: str) -> str:
+        clean = v.strip().lower() if v else "auto"
+        if clean not in ["auto", "suggest", "off"]:
+            raise ValueError(f"Invalid AGENT_ASSIGNMENT_MODE '{v}'. Must be 'auto', 'suggest', or 'off'.")
+        return clean
+    AGENT_USE_LLM: bool = True
+    AGENT_LLM_REASON: bool = True
+    AGENT_CATEGORY_MIN_CONFIDENCE: float = 0.75
+    AGENT_SIMILAR_WINDOW_HOURS: int = 6
+    AGENT_PREVIOUS_FAULT_DAYS: int = 90
+    AGENT_HIGH_IMPACT_USERS: int = 5
+    AGENT_CRITICAL_IMPACT_USERS: int = 20
+    AGENT_PRIORITY_LOCATIONS: str = ""
+    AGENT_STUCK_MINUTES: int = 10
+    AGENT_SWEEP_MINUTES: int = 5
+    AGENT_MAX_ATTEMPTS: int = 3
+    AGENT_ASSIGNMENT_WEIGHTS: str = ""  # optional JSON override
+    RAG_AUTO_INDEX_CLOSED: bool = True
+    RAG_INCLUDE_AUTO_CLOSED: bool = False
+    AGENT_USE_RAG_SIMILARITY: bool = False
+    FLOW_TRACE: bool = True
+    FLOW_TRACE_SLOW_MS: int = 3000
 
     # Multi-Provider LLM Fallback Configuration
-    # Order of providers to try (e.g., 'gemini,openai,grok,anthropic,mock')
     LLM_PROVIDER_ORDER: str = "gemini,openai,grok,anthropic,mock"
 
     # Provider API Keys
@@ -65,7 +126,6 @@ class Settings(BaseSettings):
     # Policy Limits
     MAX_CHAT_MESSAGES: int = 10
     MAX_UPLOAD_MB: int = 10
-    ALLOWED_EMAIL_DOMAIN: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
