@@ -4,19 +4,15 @@ import {
   Send,
   Sparkles,
   AlertCircle,
-  CheckCircle2,
   Clock,
   MapPin,
   Mail,
   User,
   Phone,
   HelpCircle,
-  ChevronDown,
-  ChevronUp,
-  Terminal,
-  Copy,
-  Check
+  Calendar
 } from 'lucide-react';
+import { InternetTroubleshootingGuide } from '../troubleshooting/InternetTroubleshootingGuide';
 
 interface ComplaintFormProps {
   locations: LocationOption[];
@@ -49,12 +45,10 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   });
 
   const [troubleshootingAcknowledged, setTroubleshootingAcknowledged] = useState(false);
-  const [showTroubleshooter, setShowTroubleshooter] = useState(false);
-  const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Sync AI pre-fill data if passed
+  // Sync AI filled data if triggered from chat
   useEffect(() => {
     if (aiFilledData) {
       setFormData((prev) => ({
@@ -62,8 +56,9 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
         problem_type: aiFilledData.problem_type,
         additional_comment: aiFilledData.additional_comment
       }));
-      setToastMessage('Auto-diagnosed by Campus AI. Please review the details below.');
-      setTimeout(() => setToastMessage(null), 6000);
+      setToastMessage('Complaint form auto-filled by Campus AI Diagnoser');
+      const timer = setTimeout(() => setToastMessage(null), 5000);
+      return () => clearTimeout(timer);
     }
   }, [aiFilledData]);
 
@@ -75,12 +70,6 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-  };
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedCmd(text);
-    setTimeout(() => setCopiedCmd(null), 2000);
   };
 
   const validate = () => {
@@ -114,7 +103,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
     }
 
     if (!troubleshootingAcknowledged) {
-      newErrors.acknowledged = 'Confirmation of self-troubleshooting is required before dispatch';
+      newErrors.acknowledged = 'You must confirm that you have followed the self-troubleshooting steps before submitting.';
     }
 
     setErrors(newErrors);
@@ -128,36 +117,28 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
   };
 
   return (
-    <div className="bg-noc-panel border border-noc-border rounded-xl shadow-noc overflow-hidden flex flex-col">
-      {/* Panel Header */}
-      <div className="bg-noc-surface px-6 py-4 border-b border-noc-border flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-noc-emerald radar-live" />
-            <h2 className="text-base font-bold text-white tracking-wide">
-              DISPATCH NEW NETWORK INCIDENT
-            </h2>
-          </div>
-          <p className="text-xs text-slate-400 mt-0.5 font-mono">
-            Direct queue dispatch to MNNIT Network Engineering Staff
-          </p>
-        </div>
-        <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-noc-highlight/10 text-noc-accent border border-noc-highlight/20 font-semibold uppercase">
-          PRIORITY QUEUE
-        </span>
+    <div className="bg-noc-panel border border-noc-border rounded-2xl shadow-noc overflow-hidden flex flex-col">
+      {/* Form Header */}
+      <div className="bg-noc-surface px-6 py-5 border-b border-noc-border">
+        <h2 className="text-lg font-bold text-white tracking-wide">
+          Submit Network Complaint
+        </h2>
+        <p className="text-xs text-slate-400 mt-0.5">
+          MNNIT Allahabad Network Services &amp; Diagnostic Portal
+        </p>
       </div>
 
       {/* AI Pre-fill Notification */}
       {toastMessage && (
-        <div className="bg-noc-emerald/10 border-b border-noc-emerald/20 px-6 py-3 text-xs text-emerald-300 flex items-center gap-2.5">
-          <Sparkles className="w-4 h-4 text-noc-emerald shrink-0 animate-spin" />
-          <span className="font-medium font-mono">{toastMessage}</span>
+        <div className="bg-noc-highlight/15 border-b border-noc-highlight/30 px-6 py-3 text-xs text-noc-cyan flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-noc-cyan shrink-0 animate-pulse" />
+          <span className="font-semibold">{toastMessage}</span>
         </div>
       )}
 
-      {/* Form Body */}
-      <form onSubmit={handleSubmit} className="p-6 space-y-5">
-        {/* Honeypot hidden field */}
+      {/* Form Content */}
+      <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        {/* Anti-spam honeypot */}
         <input
           type="text"
           name="honeypot"
@@ -168,157 +149,192 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
           autoComplete="off"
         />
 
-        {/* Section 1: Student Identity */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-noc-accent" />
-              Full Name <span className="text-noc-rose">*</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="e.g. Suresh Kumar"
-              className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent ${
-                errors.name ? 'border-noc-rose' : 'border-noc-border'
-              }`}
-            />
-            {errors.name && <p className="text-[11px] text-noc-rose mt-1 font-mono">{errors.name}</p>}
+        {/* Section 1: Contact Information */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2 border-b border-noc-border pb-2">
+            <User className="w-3.5 h-3.5 text-noc-cyan" />
+            Contact Information
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                Full Name <span className="text-noc-rose">*</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. Rahul Sharma"
+                className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent ${
+                  errors.name ? 'border-noc-rose' : 'border-noc-border'
+                }`}
+              />
+              {errors.name && (
+                <p className="text-[11px] text-noc-rose mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{errors.name}</span>
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                Institute Email <span className="text-noc-rose">*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="user@mnnit.ac.in"
+                className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent font-mono ${
+                  errors.email ? 'border-noc-rose' : 'border-noc-border'
+                }`}
+              />
+              {errors.email && (
+                <p className="text-[11px] text-noc-rose mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{errors.email}</span>
+                </p>
+              )}
+            </div>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-noc-accent" />
-              Institute Email <span className="text-noc-rose">*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="username@mnnit.ac.in"
-              className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border font-mono transition-colors focus:outline-none focus:border-noc-accent ${
-                errors.email ? 'border-noc-rose' : 'border-noc-border'
-              }`}
-            />
-            {errors.email && <p className="text-[11px] text-noc-rose mt-1 font-mono">{errors.email}</p>}
-          </div>
-        </div>
-
-        {/* Section 2: Contact & Location */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5 text-noc-accent" />
-              Mobile Number <span className="text-noc-rose">*</span>
+              <Phone className="w-3.5 h-3.5 text-noc-cyan" />
+              Mobile Number (10 digits) <span className="text-noc-rose">*</span>
             </label>
             <input
               type="tel"
               name="mobile"
               value={formData.mobile}
               onChange={handleChange}
-              placeholder="10-digit number"
-              className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border font-mono transition-colors focus:outline-none focus:border-noc-accent ${
+              placeholder="e.g. 9876543210"
+              maxLength={13}
+              className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent font-mono ${
                 errors.mobile ? 'border-noc-rose' : 'border-noc-border'
               }`}
             />
-            {errors.mobile && <p className="text-[11px] text-noc-rose mt-1 font-mono">{errors.mobile}</p>}
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-noc-accent" />
-              Hostel / Dept <span className="text-noc-rose">*</span>
-            </label>
-            <select
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border transition-colors focus:outline-none focus:border-noc-accent font-mono"
-            >
-              {locations.map((loc) => (
-                <option key={loc.id} value={loc.id} className="bg-noc-panel text-slate-200">
-                  {loc.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <span className="text-noc-accent font-mono font-bold">#</span>
-              Room / Lab No. <span className="text-noc-rose">*</span>
-            </label>
-            <input
-              type="text"
-              name="address_room"
-              value={formData.address_room}
-              onChange={handleChange}
-              placeholder="e.g. Room 204, B-Wing"
-              className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent ${
-                errors.address_room ? 'border-noc-rose' : 'border-noc-border'
-              }`}
-            />
-            {errors.address_room && (
-              <p className="text-[11px] text-noc-rose mt-1 font-mono">{errors.address_room}</p>
+            {errors.mobile && (
+              <p className="text-[11px] text-noc-rose mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                <span>{errors.mobile}</span>
+              </p>
             )}
           </div>
         </div>
 
-        {/* Section 3: Problem Classification & Timing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 text-noc-accent" />
-              Problem Category <span className="text-noc-rose">*</span>
-            </label>
-            <select
-              name="problem_type"
-              value={formData.problem_type}
-              onChange={handleChange}
-              className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border transition-colors focus:outline-none focus:border-noc-accent font-mono"
-            >
-              {problemTypes.map((pt) => (
-                <option key={pt.value} value={pt.value} className="bg-noc-panel text-slate-200">
-                  {pt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Section 2: Location */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2 border-b border-noc-border pb-2">
+            <MapPin className="w-3.5 h-3.5 text-noc-cyan" />
+            Location Details
+          </h3>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-noc-accent" />
-              Preferred Technician Visit Window <span className="text-noc-rose">*</span>
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="time"
-                name="preferred_from"
-                value={formData.preferred_from}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                Hostel / Department <span className="text-noc-rose">*</span>
+              </label>
+              <select
+                name="location"
+                value={formData.location}
                 onChange={handleChange}
-                className="w-full bg-noc-bg text-sm text-slate-100 px-3 py-2 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
-              />
-              <input
-                type="time"
-                name="preferred_to"
-                value={formData.preferred_to}
-                onChange={handleChange}
-                className="w-full bg-noc-bg text-sm text-slate-100 px-3 py-2 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
-              />
+                className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border transition-colors focus:outline-none focus:border-noc-accent"
+              >
+                {locations.map((loc) => (
+                  <option key={loc.id} value={loc.id} className="bg-noc-panel text-slate-200">
+                    {loc.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            {errors.preferred_to && (
-              <p className="text-[11px] text-noc-rose mt-1 font-mono">{errors.preferred_to}</p>
-            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                Room / Lab Number <span className="text-noc-rose">*</span>
+              </label>
+              <input
+                type="text"
+                name="address_room"
+                value={formData.address_room}
+                onChange={handleChange}
+                placeholder="e.g. Room 204, B-Wing"
+                className={`w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border transition-colors focus:outline-none focus:border-noc-accent ${
+                  errors.address_room ? 'border-noc-rose' : 'border-noc-border'
+                }`}
+              />
+              {errors.address_room && (
+                <p className="text-[11px] text-noc-rose mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{errors.address_room}</span>
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Section 4: Detailed Symptoms */}
+        {/* Section 3: Issue Classification & Availability */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2 border-b border-noc-border pb-2">
+            <HelpCircle className="w-3.5 h-3.5 text-noc-cyan" />
+            Issue Category &amp; Preferred Time
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                Problem Category <span className="text-noc-rose">*</span>
+              </label>
+              <select
+                name="problem_type"
+                value={formData.problem_type}
+                onChange={handleChange}
+                className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border transition-colors focus:outline-none focus:border-noc-accent"
+              >
+                {problemTypes.map((pt) => (
+                  <option key={pt.value} value={pt.value} className="bg-noc-panel text-slate-200">
+                    {pt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-noc-cyan" />
+                Preferred Time for Visit <span className="text-noc-rose">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="time"
+                  name="preferred_from"
+                  value={formData.preferred_from}
+                  onChange={handleChange}
+                  className="w-full bg-noc-bg text-sm text-slate-100 px-3 py-2 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
+                />
+                <input
+                  type="time"
+                  name="preferred_to"
+                  value={formData.preferred_to}
+                  onChange={handleChange}
+                  className="w-full bg-noc-bg text-sm text-slate-100 px-3 py-2 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
+                />
+              </div>
+              {errors.preferred_to && (
+                <p className="text-[11px] text-noc-rose mt-1">{errors.preferred_to}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Symptoms / Description */}
         <div>
           <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
-            <span>Symptoms & Error Description (Optional)</span>
+            <span>Problem Description / Symptoms (Optional)</span>
             <span className="text-[11px] text-slate-500 font-mono">
               {formData.additional_comment.length}/500 chars
             </span>
@@ -329,103 +345,40 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({
             maxLength={500}
             value={formData.additional_comment}
             onChange={handleChange}
-            placeholder="Describe what happens: e.g. Wi-Fi connects but shows 'No Internet Access', or LAN wall jack green light is unlit..."
+            placeholder="Describe what happens: e.g. Wi-Fi connects but shows 'No Internet Access', or LAN wall jack is loose..."
             className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border resize-none transition-colors focus:outline-none focus:border-noc-accent"
           />
         </div>
 
-        {/* Section 5: Mandatory Self-Troubleshooting Verification */}
-        <div className="bg-noc-surface border border-noc-border rounded-xl p-4 space-y-3">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-2.5">
-              <input
-                type="checkbox"
-                id="ack_checkbox"
-                checked={troubleshootingAcknowledged}
-                onChange={(e) => {
-                  setTroubleshootingAcknowledged(e.target.checked);
-                  if (errors.acknowledged) {
-                    setErrors((prev) => ({ ...prev, acknowledged: '' }));
-                  }
-                }}
-                className="mt-1 w-4 h-4 rounded border-noc-border bg-noc-bg text-noc-accent focus:ring-0 focus:ring-offset-0 cursor-pointer"
-              />
-              <label htmlFor="ack_checkbox" className="text-xs text-slate-200 cursor-pointer leading-relaxed">
-                <span className="font-semibold text-white">Pre-Dispatch Verification:</span> I confirm that I
-                have rebooted my device/adapter and verified basic gateway reachability.
-              </label>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowTroubleshooter(!showTroubleshooter)}
-              className="text-xs font-mono text-noc-accent hover:text-blue-400 flex items-center gap-1 shrink-0 px-2 py-1 bg-noc-highlight/10 rounded border border-noc-highlight/20 transition-colors"
-            >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>{showTroubleshooter ? 'Hide Diagnostics' : 'Quick Diagnostics'}</span>
-              {showTroubleshooter ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
-          </div>
-
-          {errors.acknowledged && (
-            <p className="text-[11px] text-noc-rose font-mono flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-              <span>{errors.acknowledged}</span>
-            </p>
-          )}
-
-          {/* Quick Diagnostics Accordion Drawer */}
-          {showTroubleshooter && (
-            <div className="pt-3 border-t border-noc-border text-xs space-y-2.5 font-mono text-slate-300">
-              <div className="bg-noc-bg p-3 rounded-lg border border-noc-border space-y-2">
-                <div className="text-[11px] text-slate-400 font-sans font-semibold">
-                  1. Check IP Configuration & Gateway Reachability:
-                </div>
-                <div className="flex items-center justify-between bg-noc-panel px-2.5 py-1.5 rounded border border-noc-border/80">
-                  <code className="text-noc-cyan">ping 172.31.1.1</code>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('ping 172.31.1.1')}
-                    className="p-1 hover:text-white transition-colors"
-                    title="Copy command"
-                  >
-                    {copiedCmd === 'ping 172.31.1.1' ? <Check className="w-3.5 h-3.5 text-noc-emerald" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-
-                <div className="text-[11px] text-slate-400 font-sans font-semibold pt-1">
-                  2. Renew DHCP Lease on Hostel Subnet:
-                </div>
-                <div className="flex items-center justify-between bg-noc-panel px-2.5 py-1.5 rounded border border-noc-border/80">
-                  <code className="text-noc-cyan">ipconfig /renew</code>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('ipconfig /renew')}
-                    className="p-1 hover:text-white transition-colors"
-                    title="Copy command"
-                  >
-                    {copiedCmd === 'ipconfig /renew' ? <Check className="w-3.5 h-3.5 text-noc-emerald" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Section 5: Official Computer Centre Troubleshooting Guide from Main */}
+        <div className="pt-2">
+          <InternetTroubleshootingGuide
+            acknowledged={troubleshootingAcknowledged}
+            onAcknowledgeChange={(checked) => {
+              setTroubleshootingAcknowledged(checked);
+              if (errors.acknowledged) {
+                setErrors((prev) => ({ ...prev, acknowledged: '' }));
+              }
+            }}
+            error={errors.acknowledged}
+          />
         </div>
 
-        {/* Submit Dispatch Button */}
+        {/* Submit Button */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-3.5 px-4 bg-noc-highlight hover:bg-blue-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-noc-glow transition-all flex items-center justify-center gap-2 text-sm tracking-wide uppercase font-mono cursor-pointer"
+          disabled={isSubmitting || !troubleshootingAcknowledged}
+          className="w-full py-3.5 px-4 bg-noc-accent hover:bg-blue-600 disabled:opacity-40 text-white font-bold rounded-xl shadow-noc transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
         >
           {isSubmitting ? (
             <>
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Transmitting Incident Ticket...</span>
+              <span>Submitting Complaint...</span>
             </>
           ) : (
             <>
               <Send className="w-4 h-4" />
-              <span>Proceed to OTP Verification & Dispatch</span>
+              <span>Verify Email OTP &amp; Submit Complaint</span>
             </>
           )}
         </button>

@@ -1,23 +1,14 @@
+// MODULE: Complaint Management (Part 2)
+// Home page rendering complaint registration form and modal email-OTP verification step.
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getConfig, requestOTP, verifyOTP, resendOTP } from '../api/complaints';
 import { ConfigResponse, ProblemType } from '../types';
 import { ComplaintForm } from '../components/form/ComplaintForm';
-import { NetworkHealthPanel } from '../components/telemetry/NetworkHealthPanel';
 import { ChatLauncher } from '../components/chat/ChatLauncher';
 import { ChatPanel } from '../components/chat/ChatPanel';
-import {
-  Shield,
-  KeyRound,
-  ArrowLeft,
-  RefreshCw,
-  AlertCircle,
-  Activity,
-  Bot,
-  CheckCircle2,
-  Lock,
-  Radio
-} from 'lucide-react';
+import { Shield, KeyRound, ArrowLeft, RefreshCw, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 
 export const Home: React.FC = () => {
@@ -82,7 +73,7 @@ export const Home: React.FC = () => {
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otpCode || otpCode.length !== 6) {
-      setOtpError('Please enter the 6-digit OTP code');
+      setOtpError('Please enter 6-digit OTP');
       return;
     }
 
@@ -106,7 +97,7 @@ export const Home: React.FC = () => {
       const res = await resendOTP(pendingId);
       setCooldown(res.resend_cooldown_seconds || 60);
       setOtpError(null);
-      alert('A fresh OTP has been dispatched to your institute email.');
+      alert('A fresh OTP code has been sent to your email.');
     } catch (err: any) {
       setOtpError(err.message || 'Failed to resend OTP');
     } finally {
@@ -117,179 +108,126 @@ export const Home: React.FC = () => {
   const handleAutoFillForm = (data: { problem_type: ProblemType; additional_comment: string }) => {
     setAiFilledData(data);
     setHasAutoFilled(true);
-    setIsChatOpen(false); // Close chat to display filled form
+    setIsChatOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
-      {/* 1. Tactical NOC Header */}
-      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3.5">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col font-sans">
+      {/* College Header */}
+      <header className="bg-noc-panel border-b border-noc-border sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <img
               src={logo}
               alt="MNNIT Allahabad Logo"
               className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
             />
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
-                  MNNIT ALLAHABAD // NOC PORTAL
-                </h1>
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-noc-emerald/10 text-noc-emerald border border-noc-emerald/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-noc-emerald radar-live" />
-                  GATEWAY UP
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Campus Network Operations & Autonomous Incident Triage
+              <h1 className="text-base font-bold tracking-tight text-white">
+                {config?.college_name || 'MNNIT Allahabad'}
+              </h1>
+              <p className="text-[11px] text-slate-400">
+                Network Complaint &amp; Diagnostic Portal
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsChatOpen(!isChatOpen)}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 text-xs font-mono rounded-lg transition-colors cursor-pointer"
-            >
-              <Bot className="w-3.5 h-3.5 text-noc-cyan" />
-              <span>AI Diagnoser</span>
-            </button>
-
             <Link
               to="/login"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-noc-highlight/20 hover:bg-noc-highlight text-noc-accent hover:text-white border border-noc-highlight/40 rounded-lg text-xs font-mono font-bold transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-noc-surface hover:bg-noc-border text-slate-200 hover:text-white border border-noc-border rounded-lg text-xs font-semibold transition-colors"
             >
-              <Shield className="w-3.5 h-3.5" />
+              <Shield className="w-3.5 h-3.5 text-noc-cyan" />
               <span>Staff Login</span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* 2. Main Content View */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+      {/* Main Container */}
+      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full">
         {otpStep ? (
-          /* High-Precision OTP Verification Card */
-          <div className="max-w-md mx-auto my-12 bg-noc-panel border border-noc-border rounded-2xl shadow-noc p-8">
+          <div className="max-w-md mx-auto my-10 bg-noc-panel border border-noc-border rounded-2xl shadow-noc p-8">
             <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-noc-highlight/15 text-noc-accent border border-noc-highlight/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-7 h-7" />
+              <div className="w-12 h-12 bg-noc-surface border border-noc-border text-noc-cyan rounded-xl flex items-center justify-center mx-auto mb-3">
+                <KeyRound className="w-6 h-6" />
               </div>
-              <h2 className="text-lg font-bold text-white tracking-wide font-mono">
-                AUTHORIZE INCIDENT DISPATCH
-              </h2>
-              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed font-sans">
-                A 6-digit cryptographic verification token was transmitted to:{' '}
-                <span className="font-mono text-white block mt-0.5">{submittedEmail}</span>
+              <h2 className="text-lg font-bold text-white">Verify Email OTP</h2>
+              <p className="text-xs text-slate-400 mt-1">
+                A 6-digit verification code was sent to <span className="font-semibold text-slate-200">{submittedEmail}</span>
               </p>
             </div>
 
             {otpError && (
-              <div className="p-3 bg-noc-rose/10 border border-noc-rose/30 text-noc-rose text-xs flex items-center gap-2 rounded-xl mb-5 font-mono">
+              <div className="p-3 bg-noc-rose/10 text-noc-rose text-xs flex items-center gap-2 rounded-lg mb-4 border border-noc-rose/30">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{otpError}</span>
               </div>
             )}
 
-            <form onSubmit={handleVerifyOTP} className="space-y-5">
+            <form onSubmit={handleVerifyOTP} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase text-center">
-                  Enter 6-Digit Token
-                </label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Enter 6-Digit OTP</label>
                 <input
                   type="text"
                   maxLength={6}
                   autoComplete="one-time-code"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                  placeholder="------"
-                  autoFocus
+                  placeholder="e.g. 123456"
                   required
-                  className="w-full text-center tracking-[0.5em] text-2xl font-bold font-mono py-3.5 bg-noc-bg border border-noc-border rounded-xl text-white focus:outline-none focus:border-noc-accent shadow-inner"
+                  autoFocus
+                  className="w-full text-center tracking-widest text-lg font-bold font-mono py-3 bg-noc-bg border border-noc-border rounded-xl text-white focus:outline-none focus:border-noc-accent"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={verifying || otpCode.length !== 6}
-                className="w-full py-3.5 bg-noc-highlight hover:bg-blue-600 disabled:opacity-50 text-white font-mono font-bold rounded-xl shadow-noc-glow transition-all flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
+                className="w-full py-3 bg-noc-accent hover:bg-blue-600 text-white font-semibold rounded-xl shadow-noc transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {verifying ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Verifying Token...</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Confirm & Enqueue Incident</span>
-                  </>
-                )}
+                {verifying ? 'Verifying OTP...' : 'Verify & Register Complaint'}
               </button>
 
-              <div className="flex items-center justify-between text-xs pt-2 font-mono">
+              <div className="flex items-center justify-between text-xs pt-2">
                 <button
                   type="button"
                   onClick={() => setOtpStep(false)}
-                  className="text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                  className="text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Modify Ticket</span>
+                  <span>Change Email</span>
                 </button>
 
                 <button
                   type="button"
                   disabled={cooldown > 0 || verifying}
                   onClick={handleResendOTP}
-                  className="text-noc-accent hover:text-blue-400 font-semibold disabled:text-slate-600 flex items-center gap-1 transition-colors"
+                  className="text-noc-cyan hover:underline font-semibold disabled:text-slate-500 disabled:no-underline flex items-center gap-1"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                  <span>{cooldown > 0 ? `Resend Token (${cooldown}s)` : 'Resend Token'}</span>
+                  <span>{cooldown > 0 ? `Resend OTP (${cooldown}s)` : 'Resend OTP'}</span>
                 </button>
               </div>
             </form>
           </div>
         ) : config ? (
-          /* ACTION-FIRST SPLIT SCREEN */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left 7 Columns: Action-First Complaint Filing */}
-            <div className="lg:col-span-7">
-              <ComplaintForm
-                locations={config.locations}
-                problemTypes={config.problem_types}
-                onSubmit={handleFormSubmit}
-                isSubmitting={isSubmitting}
-                autoFilled={hasAutoFilled}
-                aiFilledData={aiFilledData}
-              />
-            </div>
-
-            {/* Right 5 Columns: Real-Time Network Health & Telemetry */}
-            <div className="lg:col-span-5">
-              <NetworkHealthPanel onOpenChat={() => setIsChatOpen(true)} />
-            </div>
-          </div>
+          <ComplaintForm
+            locations={config.locations}
+            problemTypes={config.problem_types}
+            onSubmit={handleFormSubmit}
+            isSubmitting={isSubmitting}
+            autoFilled={hasAutoFilled}
+            aiFilledData={aiFilledData}
+          />
         ) : (
-          <div className="p-16 text-center text-slate-500 font-mono">
-            <span className="w-6 h-6 border-2 border-noc-accent border-t-transparent rounded-full animate-spin inline-block mb-3" />
-            <div>ESTABLISHING CONNECTION TO MNNIT NOC GATEWAY...</div>
-          </div>
+          <div className="p-12 text-center text-slate-500">Loading portal configuration...</div>
         )}
       </main>
 
-      {/* 3. NOC Technical Footer */}
-      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>© {new Date().getFullYear()} MOTILAL NEHRU NATIONAL INSTITUTE OF TECHNOLOGY ALLAHABAD</div>
-          <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>COMPUTER CENTRE</span>
-            <span>•</span>
-            <span>CAMPUS NETWORK TELEMETRY v2.5</span>
-            <span>•</span>
-            <span className="text-noc-emerald">SYSTEMS NORMAL</span>
-          </div>
-        </div>
+      {/* Clean Official Footer */}
+      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-400">
+        © {new Date().getFullYear()} MNNIT Allahabad IT Services. All Rights Reserved.
       </footer>
 
       {/* Floating Chat Launcher & Side Panel */}
