@@ -14,7 +14,7 @@ router = APIRouter(tags=["leaderboard"])
 
 @router.get("/leaderboard", response_model=List[LeaderboardItemResponse])
 async def get_leaderboard(
-    sort_by: str = Query("score", alias="sort", regex="^(score|rating|resolved)$"),
+    sort_by: str = Query("score", alias="sort", pattern="^(score|rating|resolved)$"),
     staff_user: dict = Depends(require_roles("ADMIN", "MANAGER", "TECHNICIAN"))
 ):
     """Calculates active technician performance leaderboard on the fly using scoring_service."""

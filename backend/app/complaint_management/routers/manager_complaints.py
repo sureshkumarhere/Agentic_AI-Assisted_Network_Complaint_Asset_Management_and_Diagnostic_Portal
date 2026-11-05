@@ -122,7 +122,7 @@ async def _build_agent_analysis_data(c: Dict[str, Any], is_manager_or_admin: boo
 
 @router.get("/complaints")
 async def list_manager_complaints(
-    view: str = Query("open", regex="^(open_unassigned|open|closed|all)$"),
+    view: str = Query("open", pattern="^(open_unassigned|open|closed|all)$"),
     status_filter: Optional[str] = Query(None, alias="status"),
     priority_filter: Optional[str] = Query(None, alias="priority"),
     problem_type: Optional[str] = Query(None),
@@ -562,7 +562,7 @@ async def toggle_technician_availability(
 
 @router.get("/reports")
 async def get_manager_reports(
-    range_filter: str = Query("today", alias="range", regex="^(today|weekly|all)$"),
+    range_filter: str = Query("today", alias="range", pattern="^(today|weekly|all)$"),
     staff_user: dict = Depends(require_roles("MANAGER", "ADMIN"))
 ):
     """Generates analytics report by date range (excluding JUNK complaints)."""

@@ -23,7 +23,7 @@ router = APIRouter(prefix="/technician", tags=["technician-complaints"])
 
 @router.get("/complaints")
 async def list_technician_complaints(
-    tab: str = Query("open", regex="^(open|closed)$"),
+    tab: str = Query("open", pattern="^(open|closed)$"),
     priority_filter: Optional[str] = Query(None, alias="priority"),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
