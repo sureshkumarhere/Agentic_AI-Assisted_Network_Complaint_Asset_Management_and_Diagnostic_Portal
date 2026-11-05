@@ -73,9 +73,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
                 <h2 className="text-base sm:text-lg font-bold tracking-tight text-white">
                   Hostel Internet Self-Troubleshooting Guide
                 </h2>
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/40 px-2 py-0.5 rounded-full">
+                {/* <span className="text-[10px] font-semibold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/40 px-2 py-0.5 rounded-full">
                   Computer Centre Advisory
-                </span>
+                </span> */}
               </div>
               <p className="text-xs text-blue-100/80 mt-1 leading-relaxed">
                 If internet is not working in your hostel room, please complete these 5 verification steps before lodging a complaint. Most connection problems are resolved within 2 minutes by correcting IP or proxy settings.
@@ -111,9 +111,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
               <div>
                 <h3 className="text-[13px] sm:text-sm font-semibold text-slate-800 group-hover:text-blue-700 transition-colors flex items-center gap-2 flex-wrap">
                   <span>Step 1: Check Static IP Configuration</span>
-                  <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
+                  {/* <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
                     ncpa.cpl
-                  </code>
+                  </code> */}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">
                   Verify room-allotted IP, subnet mask, default gateway, and DNS in Ethernet properties.
@@ -197,9 +197,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
               <div>
                 <h3 className="text-[13px] sm:text-sm font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors flex items-center gap-2 flex-wrap">
                   <span>Step 2: Check Network Connectivity (Ping Campus Core Switch)</span>
-                  <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
+                  {/* <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
                     172.31.100.1
-                  </code>
+                  </code> */}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">
                   Test physical cable, wall port, and hostel access switch reachability to the backbone.
@@ -284,9 +284,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
               <div>
                 <h3 className="text-[13px] sm:text-sm font-semibold text-slate-800 group-hover:text-cyan-700 transition-colors flex items-center gap-2 flex-wrap">
                   <span>Step 3: Configure Internet Proxy</span>
-                  <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
+                  {/* <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
                     inetcpl.cpl : 3128
-                  </code>
+                  </code> */}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">
                   Set the active campus proxy server IP and port in Internet Properties LAN Settings.
@@ -417,9 +417,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
               <div>
                 <h3 className="text-[13px] sm:text-sm font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors flex items-center gap-2 flex-wrap">
                   <span>Step 4: Test Internet in Browser</span>
-                  <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
+                  {/* <code className="text-[11px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200 font-normal">
                     google.com
-                  </code>
+                  </code> */}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">
                   Open Chrome / Edge, load a website, and complete student proxy authentication if requested.
@@ -471,9 +471,9 @@ export const InternetTroubleshootingGuide: React.FC<InternetTroubleshootingGuide
               <div>
                 <h3 className="text-[13px] sm:text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors flex items-center gap-2 flex-wrap">
                   <span>Step 5: Pre-requisites If Internet Still Does Not Work</span>
-                  <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200 font-normal">
+                  {/* <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200 font-normal">
                     Ticket Details
-                  </span>
+                  </span> */}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">
                   Essential diagnostic findings to include in your complaint form for rapid technician dispatch.
