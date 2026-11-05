@@ -118,11 +118,11 @@ export const AssetForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="bg-mnnit-blue text-white shadow-md">
+    <div className="min-h-screen bg-noc-bg text-slate-100 font-sans flex flex-col">
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc text-white">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin/network-assets/list" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+            <Link to="/admin/network-assets/list" className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <h1 className="text-lg font-bold">{isEdit ? 'Edit Asset' : 'Add New Network Asset'}</h1>
@@ -133,16 +133,16 @@ export const AssetForm: React.FC = () => {
       <NetworkAssetsNav />
 
       <main className="max-w-4xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Category Select */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Asset Category</label>
+              <label className="block text-xs font-bold text-slate-200 uppercase tracking-wider mb-2">Asset Category</label>
               <select
                 disabled={isEdit}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold"
               >
                 <option value="SWITCH">SWITCH</option>
                 <option value="ROUTER">ROUTER</option>
@@ -160,7 +160,7 @@ export const AssetForm: React.FC = () => {
             {/* Common Required Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Asset Tag *</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Asset Tag *</label>
                 <input
                   type="text"
                   name="asset_tag"
@@ -168,12 +168,12 @@ export const AssetForm: React.FC = () => {
                   value={formData.asset_tag}
                   onChange={handleChange}
                   placeholder="e.g. MNNIT-SW-001"
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Serial Number *</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Serial Number *</label>
                 <input
                   type="text"
                   name="serial_number"
@@ -181,12 +181,12 @@ export const AssetForm: React.FC = () => {
                   value={formData.serial_number}
                   onChange={handleChange}
                   placeholder="e.g. SN-987654321"
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Make / Brand *</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Make / Brand *</label>
                 <input
                   type="text"
                   name="make"
@@ -194,12 +194,12 @@ export const AssetForm: React.FC = () => {
                   value={formData.make}
                   onChange={handleChange}
                   placeholder="e.g. Cisco / Aruba / D-Link"
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Model *</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Model *</label>
                 <input
                   type="text"
                   name="model"
@@ -207,18 +207,18 @@ export const AssetForm: React.FC = () => {
                   value={formData.model}
                   onChange={handleChange}
                   placeholder="e.g. Catalyst 2960"
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Installation Location *</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Installation Location *</label>
                 <select
                   name="location_id"
                   required
                   value={formData.location_id}
                   onChange={handleChange}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl bg-white"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl bg-white"
                 >
                   {locations.map((loc) => (
                     <option key={loc._id} value={loc._id}>
@@ -229,12 +229,12 @@ export const AssetForm: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Status</label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl bg-white"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl bg-white"
                 >
                   <option value="SPARE">SPARE</option>
                   <option value="IN_USE">IN USE</option>
@@ -249,39 +249,39 @@ export const AssetForm: React.FC = () => {
             {/* Category Specific Extra Fields */}
             {['SWITCH', 'ROUTER', 'ACCESS_POINT', 'FIREWALL', 'OPTICAL_DEVICE'].includes(category) && (
               <div className="border-t pt-4 space-y-4">
-                <h3 className="text-xs font-bold text-slate-800">Network Attributes</h3>
+                <h3 className="text-xs font-bold text-slate-100">Network Attributes</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">IP Address</label>
+                    <label className="block text-xs font-semibold text-slate-200 mb-1">IP Address</label>
                     <input
                       type="text"
                       name="ip_address"
                       value={formData.ip_address}
                       onChange={handleChange}
                       placeholder="172.16.x.x"
-                      className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                      className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">MAC Address</label>
+                    <label className="block text-xs font-semibold text-slate-200 mb-1">MAC Address</label>
                     <input
                       type="text"
                       name="mac_address"
                       value={formData.mac_address}
                       onChange={handleChange}
                       placeholder="AA:BB:CC:DD:EE:FF"
-                      className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                      className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Firmware Version</label>
+                    <label className="block text-xs font-semibold text-slate-200 mb-1">Firmware Version</label>
                     <input
                       type="text"
                       name="firmware_version"
                       value={formData.firmware_version}
                       onChange={handleChange}
                       placeholder="v15.2(4)E"
-                      className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                      className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                     />
                   </div>
                 </div>
@@ -291,13 +291,13 @@ export const AssetForm: React.FC = () => {
             {category === 'SWITCH' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Total Switch Ports</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">Total Switch Ports</label>
                   <input
                     type="number"
                     name="total_ports"
                     value={formData.total_ports}
                     onChange={handleChange}
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
               </div>
@@ -306,25 +306,25 @@ export const AssetForm: React.FC = () => {
             {category === 'ACCESS_POINT' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">SSIDs (comma separated)</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">SSIDs (comma separated)</label>
                   <input
                     type="text"
                     name="ssid_list"
                     value={formData.ssid_list}
                     onChange={handleChange}
                     placeholder="MNNIT-WiFi, MNNIT-Faculty"
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Coverage Area</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">Coverage Area</label>
                   <input
                     type="text"
                     name="coverage_area"
                     value={formData.coverage_area}
                     onChange={handleChange}
                     placeholder="Hostel Block A 2nd Floor"
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
               </div>
@@ -332,37 +332,37 @@ export const AssetForm: React.FC = () => {
 
             {/* Warranty Info */}
             <div className="border-t pt-4">
-              <h3 className="text-xs font-bold text-slate-800 mb-3">Warranty Metadata</h3>
+              <h3 className="text-xs font-bold text-slate-100 mb-3">Warranty Metadata</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Start Date</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">Start Date</label>
                   <input
                     type="date"
                     name="warranty.start_date"
                     value={formData.warranty?.start_date || ''}
                     onChange={handleChange}
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">End Date</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">End Date</label>
                   <input
                     type="date"
                     name="warranty.end_date"
                     value={formData.warranty?.end_date || ''}
                     onChange={handleChange}
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Vendor</label>
+                  <label className="block text-xs font-semibold text-slate-200 mb-1">Vendor</label>
                   <input
                     type="text"
                     name="warranty.vendor"
                     value={formData.warranty?.vendor || ''}
                     onChange={handleChange}
                     placeholder="e.g. Cisco India Ltd"
-                    className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                    className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                   />
                 </div>
               </div>
@@ -372,14 +372,14 @@ export const AssetForm: React.FC = () => {
             <div className="border-t pt-6 flex justify-end gap-3">
               <Link
                 to="/admin/network-assets/list"
-                className="px-4 py-2 border border-slate-300 text-slate-700 font-semibold text-xs rounded-xl hover:bg-slate-50"
+                className="px-4 py-2 border border-noc-border text-slate-200 font-semibold text-xs rounded-xl hover:bg-noc-bg text-slate-100 font-sans flex flex-col"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-2 bg-mnnit-blue hover:bg-blue-800 text-white font-semibold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                className="px-6 py-2 bg-noc-accent hover:bg-blue-600 text-white shadow-noc font-semibold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 <span>{isEdit ? 'Update Asset' : 'Create Asset'}</span>

@@ -100,7 +100,7 @@ export const Locations: React.FC = () => {
               className={`flex items-center justify-between p-2 rounded-xl text-xs cursor-pointer transition-colors ${
                 selectedLoc?._id === node._id
                   ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-100 text-slate-800'
+                  : 'hover:bg-noc-bg text-slate-100 font-sans flex flex-col text-slate-100'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export const Locations: React.FC = () => {
             </div>
 
             {node.children && node.children.length > 0 && (
-              <div className="border-l-2 border-slate-200 ml-3 pl-2">
+              <div className="border-l-2 border-noc-border ml-3 pl-2">
                 {renderTreeNodes(node.children)}
               </div>
             )}
@@ -123,18 +123,18 @@ export const Locations: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="bg-mnnit-blue text-white shadow-md">
+    <div className="min-h-screen bg-noc-bg text-slate-100 font-sans flex flex-col">
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc text-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+            <Link to="/admin" className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <h1 className="text-lg font-bold">Location Hierarchy & Port Serving Map</h1>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-3 py-1.5 bg-mnnit-gold hover:bg-amber-400 text-mnnit-blue text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+            className="px-3 py-1.5 bg-noc-accent hover:bg-blue-600 text-white shadow-noc text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Add Location</span>
@@ -153,7 +153,7 @@ export const Locations: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Location Tree Panel */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3 h-fit">
+          <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border shadow-sm p-4 space-y-3 h-fit">
             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b pb-2">Campus Hierarchy Tree</h2>
             {isLoading ? (
               <div className="p-4 text-xs text-slate-400">Loading locations...</div>
@@ -167,16 +167,16 @@ export const Locations: React.FC = () => {
           {/* Location Details & Assets / Ports Served Panel */}
           <div className="md:col-span-2 space-y-6">
             {!selectedLoc ? (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center text-slate-400 text-xs">
+              <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border shadow-sm p-12 text-center text-slate-400 text-xs">
                 Select a location from the hierarchy tree to inspect installed assets and serving switch ports.
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Location Header Info */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div className="bg-noc-panel p-6 rounded-2xl shadow-noc border border-noc-border shadow-sm flex items-center justify-between">
                   <div>
-                    <h2 className="text-base font-bold text-slate-900">{locDetail?.location?.name}</h2>
-                    <p className="text-xs text-slate-500">{locDetail?.location?.path} | Code: <span className="font-mono text-slate-800">{locDetail?.location?.code}</span></p>
+                    <h2 className="text-base font-bold text-white">{locDetail?.location?.name}</h2>
+                    <p className="text-xs text-slate-400">{locDetail?.location?.path} | Code: <span className="font-mono text-slate-100">{locDetail?.location?.code}</span></p>
                   </div>
                   <button
                     onClick={() => handleDeleteLoc(selectedLoc._id)}
@@ -188,15 +188,15 @@ export const Locations: React.FC = () => {
                 </div>
 
                 {/* Installed Assets */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
+                <div className="bg-noc-panel p-6 rounded-2xl shadow-noc border border-noc-border shadow-sm space-y-3">
+                  <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
                     <Server className="w-4 h-4 text-blue-600" />
                     <span>Installed Hardware Assets ({locDetail?.assets?.length || 0})</span>
                   </h3>
                   {locDetail?.assets?.length === 0 ? (
                     <p className="text-xs text-slate-400 italic">No assets currently installed in this location.</p>
                   ) : (
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-noc-border">
                       {locDetail?.assets?.map((a: any) => (
                         <div key={a._id} className="py-2.5 flex items-center justify-between text-xs">
                           <div>
@@ -206,7 +206,7 @@ export const Locations: React.FC = () => {
                             <span className="text-slate-400 ml-2">({a.category})</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-slate-500">Tag: {a.asset_tag}</span>
+                            <span className="font-mono text-slate-400">Tag: {a.asset_tag}</span>
                             {a.category === 'SWITCH' && (
                               <Link
                                 to={`/admin/network-assets/switches/${a._id}/ports`}
@@ -223,8 +223,8 @@ export const Locations: React.FC = () => {
                 </div>
 
                 {/* Switch Ports Serving this Location */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
+                <div className="bg-noc-panel p-6 rounded-2xl shadow-noc border border-noc-border shadow-sm space-y-3">
+                  <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider flex items-center gap-1.5 border-b pb-2">
                     <Network className="w-4 h-4 text-emerald-600" />
                     <span>Switch Ports Serving this Location ({locDetail?.ports?.length || 0})</span>
                   </h3>
@@ -233,12 +233,12 @@ export const Locations: React.FC = () => {
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {locDetail?.ports?.map((p: any) => (
-                        <div key={p._id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1">
-                          <div className="flex items-center justify-between font-bold text-slate-800">
+                        <div key={p._id} className="p-3 bg-noc-bg text-slate-100 font-sans flex flex-col border border-noc-border rounded-xl text-xs space-y-1">
+                          <div className="flex items-center justify-between font-bold text-slate-100">
                             <span>Port #{p.port_number}</span>
                             <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-emerald-100 text-emerald-800">{p.status}</span>
                           </div>
-                          <p className="text-slate-500">VLAN {p.vlan} {p.notes ? `• ${p.notes}` : ''}</p>
+                          <p className="text-slate-400">VLAN {p.vlan} {p.notes ? `• ${p.notes}` : ''}</p>
                         </div>
                       ))}
                     </div>
@@ -253,37 +253,37 @@ export const Locations: React.FC = () => {
       {/* Add Location Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <form onSubmit={handleAddSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-slate-200 space-y-4 shadow-xl">
-            <h3 className="text-sm font-bold text-slate-800">Add New Campus Location</h3>
+          <form onSubmit={handleAddSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-noc-border space-y-4 shadow-xl">
+            <h3 className="text-sm font-bold text-slate-100">Add New Campus Location</h3>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Location Name *</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Location Name *</label>
               <input
                 type="text"
                 required
                 value={addForm.name}
                 onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
                 placeholder="e.g. Room 214 or Hostel Block A"
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Unique Location Code *</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Unique Location Code *</label>
               <input
                 type="text"
                 required
                 value={addForm.code}
                 onChange={(e) => setAddForm({ ...addForm, code: e.target.value })}
                 placeholder="e.g. HBA-R214"
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Type</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Type</label>
                 <select
                   value={addForm.type}
                   onChange={(e) => setAddForm({ ...addForm, type: e.target.value })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl bg-white"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl bg-white"
                 >
                   <option value="HOSTEL">HOSTEL</option>
                   <option value="BUILDING">BUILDING</option>
@@ -292,11 +292,11 @@ export const Locations: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Parent Location</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Parent Location</label>
                 <select
                   value={addForm.parent_id}
                   onChange={(e) => setAddForm({ ...addForm, parent_id: e.target.value })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl bg-white"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl bg-white"
                 >
                   <option value="">None (Top Level)</option>
                   {tree.map((loc) => (

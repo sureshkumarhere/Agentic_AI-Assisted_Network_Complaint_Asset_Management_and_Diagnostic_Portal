@@ -18,11 +18,7 @@ import {
   Plus,
   Trash2,
   LogOut,
-  AlertCircle,
-  ArrowLeft,
-  Activity,
-  Server,
-  Award
+  AlertCircle
 } from 'lucide-react';
 import logo from '../../assets/logo.jpeg';
 
@@ -129,9 +125,9 @@ export const TechnicianDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
-      {/* Top NOC Header */}
-      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col font-sans">
+      {/* Top Header */}
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
@@ -140,24 +136,15 @@ export const TechnicianDashboard: React.FC = () => {
               className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
             />
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
-                  TECHNICIAN WORKBENCH // FIELD OPERATIONS
-                </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-emerald/10 text-noc-emerald border border-noc-emerald/30 font-bold uppercase">
-                  ONLINE
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                On-Site Hardware Repair, Diagnostics & Spares Log
-              </p>
+              <h1 className="text-base font-bold text-white tracking-tight">Technician Workbench</h1>
+              <p className="text-[11px] text-slate-400">On-Site Network Repair &amp; Stock Dispatch</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
               to="/admin/network-assets"
-              className="hidden sm:inline-flex px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover rounded-lg text-xs font-mono text-slate-200 border border-noc-border transition-colors"
+              className="hidden sm:inline-flex px-3 py-1.5 bg-noc-surface hover:bg-noc-border rounded-lg text-xs font-semibold text-slate-300 hover:text-white border border-noc-border transition-colors"
             >
               Network Assets (Read-Only)
             </Link>
@@ -188,25 +175,25 @@ export const TechnicianDashboard: React.FC = () => {
 
             {/* Resolution Form (if assigned and open) */}
             {(selectedComplaint.status === 'ASSIGNED' || selectedComplaint.status === 'DIAGNOSED') && (
-              <div className="bg-noc-panel rounded-xl p-6 border border-noc-border shadow-noc space-y-5">
+              <div className="bg-noc-panel rounded-2xl p-6 border border-noc-border shadow-noc space-y-5">
                 <div className="flex items-center gap-2 border-b border-noc-border pb-3">
-                  <Wrench className="w-5 h-5 text-noc-emerald" />
-                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
-                    RECORD ON-SITE DIAGNOSIS & RESOLUTION // TICKET #{selectedComplaint.ticket_id}
+                  <Wrench className="w-4 h-4 text-noc-emerald" />
+                  <h2 className="text-sm font-bold text-white">
+                    Submit Diagnosis &amp; Solution (Ticket #{selectedComplaint.ticket_id})
                   </h2>
                 </div>
 
                 {resolveError && (
-                  <div className="p-3 bg-noc-rose/10 text-noc-rose text-xs flex items-center gap-2 rounded-xl border border-noc-rose/30 font-mono">
+                  <div className="p-3 bg-noc-rose/10 text-noc-rose text-xs flex items-center gap-2 rounded-xl border border-noc-rose/30">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>{resolveError}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleResolveSubmit} className="space-y-5 font-sans">
+                <form onSubmit={handleResolveSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase">
-                      Technical Diagnosis Log <span className="text-noc-rose">*</span>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      Technical Diagnosis <span className="text-noc-rose">*</span>
                     </label>
                     <textarea
                       value={diagnosis}
@@ -219,8 +206,8 @@ export const TechnicianDashboard: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase">
-                      Action Taken / Solution Provided (Transmitted to Student) <span className="text-noc-rose">*</span>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      Action Taken / Solution Provided <span className="text-noc-rose">*</span>
                     </label>
                     <textarea
                       value={solution}
@@ -235,13 +222,13 @@ export const TechnicianDashboard: React.FC = () => {
                   {/* Stock Usage Selector */}
                   <div className="space-y-3 pt-2 border-t border-noc-border">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-slate-300 font-mono uppercase">
+                      <label className="text-xs font-semibold text-slate-300">
                         Warehouse Stock / Spares Utilized (Optional)
                       </label>
                       <button
                         type="button"
                         onClick={handleAddItem}
-                        className="px-3 py-1 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 rounded-lg text-xs font-mono font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                        className="px-3 py-1 bg-noc-surface hover:bg-noc-border border border-noc-border text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Stock Item</span>
@@ -260,11 +247,11 @@ export const TechnicianDashboard: React.FC = () => {
                                   prev.map((it, i) => (i === idx ? { ...it, stock_item_id: newId } : it))
                                 );
                               }}
-                              className="flex-1 bg-noc-bg text-xs text-slate-100 p-2.5 rounded-lg border border-noc-border font-mono focus:outline-none focus:border-noc-accent"
+                              className="flex-1 p-2 bg-noc-bg text-xs border border-noc-border rounded-lg text-slate-200 focus:outline-none focus:border-noc-accent"
                             >
-                              {stockItems.map((st) => (
+                              {stockItems.map((st: any) => (
                                 <option key={st._id} value={st._id} className="bg-noc-panel text-slate-200">
-                                  {st.item_type} ({st.quantity_available} in stock)
+                                  {st.item_name} ({st.quantity_in_hand} in stock)
                                 </option>
                               ))}
                             </select>
@@ -274,18 +261,18 @@ export const TechnicianDashboard: React.FC = () => {
                               min={1}
                               value={item.quantity}
                               onChange={(e) => {
-                                const q = parseInt(e.target.value) || 1;
+                                const qty = parseInt(e.target.value) || 1;
                                 setItemsUsed((prev) =>
-                                  prev.map((it, i) => (i === idx ? { ...it, quantity: q } : it))
+                                  prev.map((it, i) => (i === idx ? { ...it, quantity: qty } : it))
                                 );
                               }}
-                              className="w-24 bg-noc-bg text-xs text-slate-100 p-2.5 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
+                              className="w-20 p-2 bg-noc-bg text-xs border border-noc-border rounded-lg text-slate-200 text-center focus:outline-none focus:border-noc-accent font-mono"
                             />
 
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(idx)}
-                              className="p-2 text-noc-rose hover:bg-noc-rose/10 rounded-lg border border-noc-border transition-colors cursor-pointer"
+                              className="p-2 text-slate-500 hover:text-noc-rose transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -298,9 +285,9 @@ export const TechnicianDashboard: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 px-4 bg-noc-emerald hover:bg-emerald-600 disabled:opacity-50 text-white font-mono font-bold rounded-xl shadow-noc-emerald transition-all flex items-center justify-center gap-2 text-xs tracking-wider uppercase cursor-pointer"
+                    className="w-full py-3.5 px-4 bg-noc-emerald hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-noc transition-all flex items-center justify-center gap-2 text-xs tracking-wider uppercase cursor-pointer"
                   >
-                    {submitting ? 'Transmitting Resolution...' : 'Submit Resolution & Notify Student'}
+                    {submitting ? 'Submitting Resolution...' : 'Submit Resolution & Notify Student'}
                   </button>
                 </form>
               </div>
@@ -309,12 +296,12 @@ export const TechnicianDashboard: React.FC = () => {
         ) : (
           <>
             {/* Sub Navigation Tabs */}
-            <div className="bg-noc-panel p-1.5 rounded-xl border border-noc-border shadow-noc flex items-center gap-2 text-xs font-mono font-semibold">
+            <div className="bg-noc-panel p-1.5 rounded-xl border border-noc-border shadow-noc flex items-center gap-2 text-xs font-semibold">
               <button
                 onClick={() => setActiveTab('open')}
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'open'
-                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    ? 'bg-noc-accent text-white shadow-noc'
                     : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
@@ -326,7 +313,7 @@ export const TechnicianDashboard: React.FC = () => {
                 onClick={() => setActiveTab('closed')}
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'closed'
-                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    ? 'bg-noc-accent text-white shadow-noc'
                     : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
@@ -338,51 +325,51 @@ export const TechnicianDashboard: React.FC = () => {
                 onClick={() => setActiveTab('ratings')}
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'ratings'
-                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    ? 'bg-noc-accent text-white shadow-noc'
                     : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
-                <Star className="w-4 h-4 text-noc-gold" />
-                <span>Quality Ratings & Position</span>
+                <Star className="w-4 h-4 text-noc-amber" />
+                <span>Quality Ratings &amp; Position</span>
               </button>
             </div>
 
             {/* Content Tabs */}
             {activeTab === 'ratings' ? (
               myRatings && (
-                <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-noc p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
                       <span className="text-slate-400 uppercase tracking-wider block">Average Rating Score</span>
                       <div className="flex items-center gap-2 mt-2">
                         <StarRating value={Math.round(myRatings.average_rating || 0)} readOnly size={20} />
-                        <span className="text-2xl font-bold text-noc-gold">{myRatings.average_rating || 'N/A'}</span>
+                        <span className="text-2xl font-bold font-mono text-noc-amber">{myRatings.average_rating || 'N/A'}</span>
                       </div>
                     </div>
 
                     <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
                       <span className="text-slate-400 uppercase tracking-wider block">Total Ratings Received</span>
-                      <span className="text-2xl font-bold text-noc-accent mt-2 block">{myRatings.rating_count}</span>
+                      <span className="text-2xl font-bold font-mono text-noc-cyan mt-2 block">{myRatings.rating_count}</span>
                     </div>
 
                     <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
                       <span className="text-slate-400 uppercase tracking-wider block">Leaderboard Rank</span>
-                      <span className="text-2xl font-bold text-purple-400 mt-2 block">#{myRatings.rank_position}</span>
+                      <span className="text-2xl font-bold font-mono text-purple-400 mt-2 block">#{myRatings.rank_position}</span>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="font-bold font-mono uppercase text-slate-300 border-b border-noc-border pb-2 mb-3 text-xs tracking-wider">
-                      STUDENT QUALITY AUDIT LOG
+                    <h3 className="font-bold text-white border-b border-noc-border pb-2 mb-3 text-xs">
+                      Anonymous Student Feedback History
                     </h3>
                     {myRatings.ratings.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic font-mono">No rating feedback received yet.</p>
+                      <p className="text-xs text-slate-500 italic">No rating feedback received yet.</p>
                     ) : (
                       <div className="space-y-3">
                         {myRatings.ratings.map((r: any, idx: number) => (
                           <div
                             key={idx}
-                            className="p-3.5 bg-noc-bg rounded-lg border border-noc-border text-xs space-y-1"
+                            className="p-3.5 bg-noc-bg rounded-xl border border-noc-border text-xs space-y-1"
                           >
                             <div className="flex items-center justify-between">
                               <StarRating value={r.rating} readOnly size={16} />
@@ -390,7 +377,7 @@ export const TechnicianDashboard: React.FC = () => {
                                 {new Date(r.created_at).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
                               </span>
                             </div>
-                            {r.feedback && <p className="text-slate-300 italic pt-1 font-sans">"{r.feedback}"</p>}
+                            {r.feedback && <p className="text-slate-300 italic pt-1">"{r.feedback}"</p>}
                           </div>
                         ))}
                       </div>
@@ -406,8 +393,8 @@ export const TechnicianDashboard: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
-        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
+      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} MNNIT Allahabad IT Services. All Rights Reserved.
       </footer>
     </div>
   );

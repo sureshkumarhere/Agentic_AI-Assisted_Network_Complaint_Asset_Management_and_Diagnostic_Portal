@@ -130,18 +130,18 @@ export const Stock: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="bg-mnnit-blue text-white shadow-md">
+    <div className="min-h-screen bg-noc-bg text-slate-100 font-sans flex flex-col">
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc text-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+            <Link to="/admin" className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <h1 className="text-lg font-bold">Stock & Inventory Management</h1>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-3 py-1.5 bg-mnnit-gold hover:bg-amber-400 text-mnnit-blue text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+            className="px-3 py-1.5 bg-noc-accent hover:bg-blue-600 text-white shadow-noc text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Add Stock Item</span>
@@ -159,8 +159,8 @@ export const Stock: React.FC = () => {
         )}
 
         {/* Filter Toolbar */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+        <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border p-4 shadow-sm flex items-center justify-between">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-200">
             <input
               type="checkbox"
               checked={lowStockOnly}
@@ -172,16 +172,16 @@ export const Stock: React.FC = () => {
         </div>
 
         {/* Stock Items Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-slate-400 text-xs">Loading stock items...</div>
           ) : items.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 text-xs">No stock items found.</div>
+            <div className="p-12 text-center text-slate-400 text-xs">No stock items found.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                  <tr className="bg-noc-bg text-slate-100 font-sans flex flex-col border-b border-noc-border text-slate-400 font-semibold">
                     <th className="p-3.5">Item Type</th>
                     <th className="p-3.5">Make / Model</th>
                     <th className="p-3.5">Qty Available</th>
@@ -190,13 +190,13 @@ export const Stock: React.FC = () => {
                     <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-noc-border">
                   {items.map((item) => (
-                    <tr key={item._id} className={`hover:bg-slate-50 transition-colors ${item.is_low ? 'bg-amber-50/40' : ''}`}>
-                      <td className="p-3.5 font-bold text-slate-900">{item.item_type}</td>
-                      <td className="p-3.5 text-slate-700">{item.make} {item.model}</td>
-                      <td className="p-3.5 font-bold text-base text-slate-900">{item.quantity_available}</td>
-                      <td className="p-3.5 text-slate-500">{item.minimum_level}</td>
+                    <tr key={item._id} className={`hover:bg-noc-bg text-slate-100 font-sans flex flex-col transition-colors ${item.is_low ? 'bg-amber-50/40' : ''}`}>
+                      <td className="p-3.5 font-bold text-white">{item.item_type}</td>
+                      <td className="p-3.5 text-slate-200">{item.make} {item.model}</td>
+                      <td className="p-3.5 font-bold text-base text-white">{item.quantity_available}</td>
+                      <td className="p-3.5 text-slate-400">{item.minimum_level}</td>
                       <td className="p-3.5">
                         {item.is_low ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
@@ -224,7 +224,7 @@ export const Stock: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleViewTransactions(item)}
-                          className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1 text-slate-400 hover:text-slate-200 hover:bg-noc-bg text-slate-100 font-sans flex flex-col rounded-lg transition-colors"
                           title="Movement history"
                         >
                           <History className="w-4 h-4" />
@@ -242,60 +242,60 @@ export const Stock: React.FC = () => {
       {/* Add Item Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <form onSubmit={handleAddSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-slate-200 space-y-4 shadow-xl">
-            <h3 className="text-sm font-bold text-slate-800">Add Bulk Stock Item</h3>
+          <form onSubmit={handleAddSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-noc-border space-y-4 shadow-xl">
+            <h3 className="text-sm font-bold text-slate-100">Add Bulk Stock Item</h3>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Item Type *</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Item Type *</label>
               <input
                 type="text"
                 required
                 value={addForm.item_type}
                 onChange={(e) => setAddForm({ ...addForm, item_type: e.target.value })}
                 placeholder="e.g. Cat6 LAN Cable Box or Single-mode SFP"
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Make</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Make</label>
                 <input
                   type="text"
                   required
                   value={addForm.make}
                   onChange={(e) => setAddForm({ ...addForm, make: e.target.value })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Model</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Model</label>
                 <input
                   type="text"
                   required
                   value={addForm.model}
                   onChange={(e) => setAddForm({ ...addForm, model: e.target.value })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Initial Qty</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Initial Qty</label>
                 <input
                   type="number"
                   required
                   value={addForm.quantity_available}
                   onChange={(e) => setAddForm({ ...addForm, quantity_available: Number(e.target.value) })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Min Threshold</label>
+                <label className="block text-xs font-semibold text-slate-200 mb-1">Min Threshold</label>
                 <input
                   type="number"
                   required
                   value={addForm.minimum_level}
                   onChange={(e) => setAddForm({ ...addForm, minimum_level: Number(e.target.value) })}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                  className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
                 />
               </div>
             </div>
@@ -310,10 +310,10 @@ export const Stock: React.FC = () => {
       {/* Issue Modal */}
       {issueItem && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <form onSubmit={handleIssueSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-slate-200 space-y-4 shadow-xl">
-            <h3 className="text-sm font-bold text-slate-800">Issue Stock: {issueItem.item_type}</h3>
+          <form onSubmit={handleIssueSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-noc-border space-y-4 shadow-xl">
+            <h3 className="text-sm font-bold text-slate-100">Issue Stock: {issueItem.item_type}</h3>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Quantity to Issue (Available: {issueItem.quantity_available})</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Quantity to Issue (Available: {issueItem.quantity_available})</label>
               <input
                 type="number"
                 min={1}
@@ -321,18 +321,18 @@ export const Stock: React.FC = () => {
                 required
                 value={issueQty}
                 onChange={(e) => setIssueQty(Number(e.target.value))}
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Deployment Reason *</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Deployment Reason *</label>
               <input
                 type="text"
                 required
                 value={issueReason}
                 onChange={(e) => setIssueReason(e.target.value)}
                 placeholder="Where or why is stock issued?"
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
@@ -346,17 +346,17 @@ export const Stock: React.FC = () => {
       {/* Restock Modal */}
       {restockItem && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <form onSubmit={handleRestockSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-slate-200 space-y-4 shadow-xl">
-            <h3 className="text-sm font-bold text-slate-800">Restock Item: {restockItem.item_type}</h3>
+          <form onSubmit={handleRestockSubmit} className="bg-white rounded-2xl p-6 max-w-md w-full border border-noc-border space-y-4 shadow-xl">
+            <h3 className="text-sm font-bold text-slate-100">Restock Item: {restockItem.item_type}</h3>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Restock Quantity</label>
+              <label className="block text-xs font-semibold text-slate-200 mb-1">Restock Quantity</label>
               <input
                 type="number"
                 min={1}
                 required
                 value={restockQty}
                 onChange={(e) => setRestockQty(Number(e.target.value))}
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl"
+                className="w-full p-2.5 text-xs border border-noc-border rounded-xl"
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
@@ -370,28 +370,28 @@ export const Stock: React.FC = () => {
       {/* Transactions Drawer */}
       {txItem && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end">
-          <div className="bg-white max-w-md w-full h-full p-6 space-y-4 overflow-y-auto border-l border-slate-200 shadow-2xl">
+          <div className="bg-white max-w-md w-full h-full p-6 space-y-4 overflow-y-auto border-l border-noc-border shadow-2xl">
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="text-sm font-bold text-slate-800">Stock Movement Audit Log</h3>
-              <button onClick={() => setTxItem(null)} className="p-1 text-slate-400 hover:text-slate-600">
+              <h3 className="text-sm font-bold text-slate-100">Stock Movement Audit Log</h3>
+              <button onClick={() => setTxItem(null)} className="p-1 text-slate-400 hover:text-slate-300">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-500 font-semibold">{txItem.item_type} ({txItem.make} {txItem.model})</p>
+            <p className="text-xs text-slate-400 font-semibold">{txItem.item_type} ({txItem.make} {txItem.model})</p>
 
             <div className="space-y-3">
               {transactions.length === 0 ? (
                 <p className="text-xs text-slate-400 italic">No transactions logged for this item.</p>
               ) : (
                 transactions.map((tx) => (
-                  <div key={tx._id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1">
+                  <div key={tx._id} className="p-3 bg-noc-bg text-slate-100 font-sans flex flex-col border border-noc-border rounded-xl text-xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className={`font-bold ${tx.change > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                         {tx.change > 0 ? `+${tx.change}` : tx.change} units
                       </span>
                       <span className="text-[10px] text-slate-400">{new Date(tx.date).toLocaleString()}</span>
                     </div>
-                    <p className="text-slate-700">{tx.reason}</p>
+                    <p className="text-slate-200">{tx.reason}</p>
                     <p className="text-[10px] text-slate-400">By {tx.by}</p>
                   </div>
                 ))

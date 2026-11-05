@@ -64,12 +64,12 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({ onUpload, isUplo
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
-      <h3 className="text-sm font-bold text-slate-800 mb-3">Upload Knowledge Document</h3>
+    <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border p-6 mb-8 text-slate-100">
+      <h3 className="text-sm font-bold text-white mb-3">Upload Knowledge Document</h3>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+        <div className="mb-4 bg-noc-rose/15 border border-noc-rose/30 text-noc-rose p-3 rounded-xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -81,14 +81,14 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({ onUpload, isUplo
         onDrop={handleDrop}
         className={`border-2 border-dashed rounded-2xl p-8 text-center transition-colors ${
           dragActive
-            ? 'border-blue-600 bg-blue-50/50'
-            : 'border-slate-300 hover:border-slate-400 bg-slate-50/50'
+            ? 'border-noc-accent bg-noc-surface/80'
+            : 'border-noc-border hover:border-slate-500 bg-noc-surface/40'
         }`}
       >
-        <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-        <p className="text-xs font-semibold text-slate-700 mb-1">
-          Drag & drop document here, or{' '}
-          <label className="text-blue-600 hover:underline cursor-pointer">
+        <Upload className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+        <p className="text-xs font-semibold text-slate-200 mb-1">
+          Drag &amp; drop document here, or{' '}
+          <label className="text-noc-cyan hover:underline cursor-pointer">
             browse files
             <input
               type="file"
@@ -98,19 +98,19 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({ onUpload, isUplo
             />
           </label>
         </p>
-        <p className="text-[11px] text-slate-400">Supports PDF, DOCX, TXT up to 10 MB</p>
+        <p className="text-[11px] text-slate-400 font-mono">Supports PDF, DOCX, TXT up to 10 MB</p>
 
         {selectedFile && (
-          <div className="mt-4 p-3 bg-white rounded-xl border border-slate-200 inline-flex items-center gap-3">
-            <FileText className="w-5 h-5 text-mnnit-blue" />
+          <div className="mt-4 p-3 bg-noc-bg rounded-xl border border-noc-border inline-flex items-center gap-3">
+            <FileText className="w-5 h-5 text-noc-cyan" />
             <div className="text-left">
-              <p className="text-xs font-semibold text-slate-800">{selectedFile.name}</p>
-              <p className="text-[10px] text-slate-400">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+              <p className="text-xs font-semibold text-white">{selectedFile.name}</p>
+              <p className="text-[10px] text-slate-400 font-mono">{(selectedFile.size / 1024).toFixed(1)} KB</p>
             </div>
             <button
               onClick={handleSubmit}
               disabled={isUploading}
-              className="ml-3 px-3 py-1.5 bg-mnnit-blue hover:bg-blue-800 text-white text-xs font-semibold rounded-lg disabled:opacity-50"
+              className="ml-3 px-3 py-1.5 bg-noc-accent hover:bg-blue-600 text-white text-xs font-semibold rounded-lg disabled:opacity-50 transition-colors"
             >
               {isUploading ? 'Uploading...' : 'Upload & Index'}
             </button>

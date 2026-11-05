@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getCategoryDetail, uploadDocument, deleteDocument, unassignChatFromReference, previewDocument, getAdminChatDetail, } from '../../api/admin';
+import {
+  getCategoryDetail,
+  uploadDocument,
+  deleteDocument,
+  unassignChatFromReference,
+  previewDocument,
+  getAdminChatDetail
+} from '../../api/admin';
 import { CategoryDetailResponse } from '../../types';
 import { UploadDropzone } from '../../components/admin/UploadDropzone';
 import { renderAsync } from 'docx-preview';
-
-
 import {
   Folder,
   ArrowLeft,
@@ -18,6 +23,7 @@ import {
   Clock,
   AlertCircle,
   Eye,
+  X
 } from 'lucide-react';
 
 export const CategoryPage: React.FC = () => {
@@ -29,18 +35,14 @@ export const CategoryPage: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const navigate = useNavigate();
 
-
   const [previewContent, setPreviewContent] = useState('');
   const [previewFileName, setPreviewFileName] = useState('');
   const [previewType, setPreviewType] = useState<'pdf' | 'docx' | 'text'>('text');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
-  const [isDocumentPickerOpen, setIsDocumentPickerOpen] = useState(false);
   const [previewMode, setPreviewMode] = useState<'document' | 'chat'>('document');
-
   const docxPreviewRef = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     if (
@@ -69,19 +71,16 @@ export const CategoryPage: React.FC = () => {
         }
 
         const blob = await response.blob();
-
         if (cancelled) return;
 
         await renderAsync(blob, container, undefined, {
           inWrapper: true,
-          breakPages: true,
+          breakPages: true
         });
       } catch (error) {
         if (!cancelled) {
           container.textContent =
-            error instanceof Error
-              ? error.message
-              : 'Unable to render DOCX preview.';
+            error instanceof Error ? error.message : 'Unable to render DOCX preview.';
         }
       }
     };
@@ -91,14 +90,7 @@ export const CategoryPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [
-    isPreviewOpen,
-    isPreviewLoading,
-    previewMode,
-    previewType,
-    previewContent,
-  ]);
-
+  }, [isPreviewOpen, isPreviewLoading, previewMode, previewType, previewContent]);
 
   const fetchCategory = () => {
     if (!categoryId) return;
@@ -121,7 +113,7 @@ export const CategoryPage: React.FC = () => {
     if (!categoryId) return;
     setIsUploading(true);
     try {
-      const doc = await uploadDocument(categoryId, file);
+      await uploadDocument(categoryId, file);
       setToast(`Uploaded "${file.name}". Processing and vector indexing started.`);
       fetchCategory();
       setTimeout(() => setToast(null), 5000);
@@ -144,8 +136,6 @@ export const CategoryPage: React.FC = () => {
     }
   };
 
-
-
   const handlePreview = async (docId: string, fileName: string) => {
     setPreviewMode('document');
     setPreviewFileName(fileName);
@@ -160,8 +150,7 @@ export const CategoryPage: React.FC = () => {
       setPreviewType(result.type);
     } catch (error) {
       setPreviewContent(
-        `Unable to preview file: ${error instanceof Error ? error.message : 'Something went wrong'
-        }`
+        `Unable to preview file: ${error instanceof Error ? error.message : 'Something went wrong'}`
       );
       setPreviewType('text');
     } finally {
@@ -178,33 +167,25 @@ export const CategoryPage: React.FC = () => {
     setIsPreviewLoading(true);
 
     try {
-      const result = await getAdminChatDetail(chatId);
-
-      const transcript = result.messages
-        .map((message) => {
-          const role = message.role === 'user' ? 'Student' : 'Assistant';
-          return `${role}:\n${message.content}`;
-        })
-        .join('\n\n');
-
-      setPreviewContent(transcript || chatPreview || 'No messages found.');
+      const chatDetail = await getAdminChatDetail(chatId);
+      const textLines = chatDetail.messages
+        .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
+        .join('\n\n---\n\n');
+      setPreviewContent(textLines);
     } catch (error) {
       setPreviewContent(
-        `Unable to load chat transcript: ${error instanceof Error ? error.message : 'Something went wrong'
-        }`
+        `Unable to load chat: ${error instanceof Error ? error.message : 'Something went wrong'}`
       );
     } finally {
       setIsPreviewLoading(false);
     }
   };
 
-
-
   const handleRemoveChat = async (chatId: string) => {
-    if (!window.confirm('Remove chat from reference category?')) return;
+    if (!window.confirm('Remove this chat from reference knowledge base?')) return;
     try {
       await unassignChatFromReference(chatId);
-      setToast('Chat removed from reference category.');
+      setToast('Chat unassigned and removed from vector index.');
       fetchCategory();
       setTimeout(() => setToast(null), 4000);
     } catch (err: any) {
@@ -213,56 +194,73 @@ export const CategoryPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-noc-bg text-slate-100 noc-grid">
-      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border text-white shadow-noc sticky top-0 z-30">
+    <div className="min-h-screen bg-noc-bg text-slate-100 font-sans flex flex-col">
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin/reference" className="p-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-white transition-colors">
+            <Link
+              to="/admin/reference"
+              className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-slate-300 hover:text-white transition-colors"
+            >
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <h1 className="text-lg font-bold">{data?.category.name || 'Category Detail'}</h1>
+            <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
+              {data?.category.name || 'Category Detail'}
+            </h1>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
         {toast && (
-          <div className="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 p-3.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mb-6 bg-noc-emerald/15 border border-noc-emerald/30 text-noc-emerald p-3.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{toast}</span>
           </div>
         )}
 
         {isLoading ? (
-          <div className="p-12 text-center text-slate-400">Loading category detail...</div>
+          <div className="p-12 text-center text-slate-500">Loading category content...</div>
         ) : !data ? (
           <div className="p-12 text-center text-slate-500">Category not found.</div>
         ) : (
           <div>
-            {/* Category Banner */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+            {/* Category Header */}
+            <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border p-6 mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-mnnit-blue flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-noc-surface border border-noc-border text-noc-cyan flex items-center justify-center">
                   <Folder className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">{data.category.name}</h2>
-                  <p className="text-xs text-slate-500">{data.category.description}</p>
+                  <h2 className="text-xl font-bold text-white">{data.category.name}</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">{data.category.description}</p>
                 </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-noc-border flex items-center gap-6 text-xs text-slate-400 font-mono">
+                <span className="flex items-center gap-1.5">
+                  <FileText className="w-4 h-4 text-noc-emerald" />
+                  {data.documents.length} official documents
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <MessageSquare className="w-4 h-4 text-noc-cyan" />
+                  {data.chats.length} curated chat transcripts
+                </span>
               </div>
             </div>
 
-            {/* Document Drag & Drop Uploadzone */}
+            {/* Upload Area for documents */}
             <UploadDropzone onUpload={handleUploadFile} isUploading={isUploading} />
 
             {/* Tabs for Documents and Chats */}
-            <div className="flex border-b border-slate-200 mb-6">
+            <div className="flex items-center gap-2 mb-6 border-b border-noc-border pb-3">
               <button
                 onClick={() => setActiveTab('documents')}
-                className={`pb-3 px-4 font-semibold text-xs flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'documents'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-                  }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  activeTab === 'documents'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
+                }`}
               >
                 <FileText className="w-4 h-4" />
                 <span>Documents ({data.documents.length})</span>
@@ -270,92 +268,75 @@ export const CategoryPage: React.FC = () => {
 
               <button
                 onClick={() => setActiveTab('chats')}
-                className={`pb-3 px-4 font-semibold text-xs flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'chats'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-                  }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  activeTab === 'chats'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
+                }`}
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Promoted Chats ({data.chats.length})</span>
               </button>
             </div>
 
-            {/* Tab Contents */}
+            {/* Tab Panels */}
             {activeTab === 'documents' ? (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border overflow-hidden">
                 {data.documents.length === 0 ? (
-                  <div className="p-12 text-center text-slate-400 text-sm">No uploaded documents in this category.</div>
+                  <div className="p-12 text-center text-slate-500 text-sm">
+                    No documents uploaded to this category yet.
+                  </div>
                 ) : (
-                  <div className="divide-y divide-slate-100">
+                  <div className="divide-y divide-noc-border">
                     {data.documents.map((doc) => (
-                      <div key={doc.id} className="p-4 flex items-center justify-between gap-4">
+                      <div
+                        key={doc.id}
+                        className="p-4 flex items-center justify-between gap-4 hover:bg-noc-surface/50 transition-colors"
+                      >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-lg bg-noc-surface border border-noc-border text-noc-emerald flex items-center justify-center shrink-0">
                             <FileText className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold text-slate-800 truncate">{doc.original_filename}</p>
-                              {doc.source_type === 'COMPLAINT' && (
-                                <span className="text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-full shrink-0">
-                                  From complaint
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                            <p className="text-sm font-semibold text-white truncate">{doc.original_filename}</p>
+                            <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5 font-mono">
                               <span>{(doc.size_bytes / 1024).toFixed(1)} KB</span>
                               <span>•</span>
-                              <span>{new Date(doc.uploaded_at).toLocaleDateString()}</span>
-                              <span>•</span>
-                              <span>{doc.chunk_count} chunks indexed</span>
+                              <span
+                                className={`inline-flex items-center gap-1 font-semibold ${
+                                  doc.status === 'INDEXED'
+                                    ? 'text-noc-emerald'
+                                    : doc.status === 'FAILED'
+                                    ? 'text-noc-rose'
+                                    : 'text-noc-amber'
+                                }`}
+                              >
+                                {doc.status === 'INDEXED' && <CheckCircle2 className="w-3 h-3" />}
+                                {doc.status === 'PROCESSING' && <Clock className="w-3 h-3 animate-spin" />}
+                                {doc.status === 'FAILED' && <AlertCircle className="w-3 h-3" />}
+                                {doc.status}
+                              </span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0">
-                          {/* Status Badge */}
-                          {doc.status === 'INDEXED' && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3" /> INDEXED
-                            </span>
-                          )}
-                          {doc.status === 'PROCESSING' && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                              <Clock className="w-3 h-3 animate-spin" /> PROCESSING
-                            </span>
-                          )}
-                          {doc.status === 'FAILED' && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full border border-red-200" title={doc.error_message || ''}>
-                              <AlertCircle className="w-3 h-3" /> FAILED
-                            </span>
-                          )}
+                        <div className="flex items-center gap-2 shrink-0">
+                          {/* Preview button */}
+                          <button
+                            type="button"
+                            onClick={() => handlePreview(doc.id, doc.original_filename)}
+                            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-noc-surface border border-transparent hover:border-noc-border transition-colors"
+                            title="Preview document"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
 
-
-
-
-                          {/* View document */}
-                          {(doc.source_type === 'UPLOAD' || doc.source_type === 'COMPLAINT') &&
-                            /\.(pdf|txt|docx)$/i.test(doc.original_filename) && (
-                              <button
-                                type="button"
-                                onClick={() => handlePreview(doc.id, doc.original_filename)}
-                                className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-slate-50"
-                                title="View document"
-                                aria-label={`View ${doc.original_filename}`}
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                            )}
-
-
-
-
-                          {/* Download original */}
+                          {/* Download link if available */}
                           {doc.source_type === 'UPLOAD' && (
                             <a
                               href={`/api/admin/documents/${doc.id}/download`}
-                              download
-                              className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-slate-50"
+                              download={doc.original_filename}
+                              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-noc-surface border border-transparent hover:border-noc-border transition-colors"
                               title="Download original file"
                             >
                               <Download className="w-4 h-4" />
@@ -365,7 +346,7 @@ export const CategoryPage: React.FC = () => {
                           {/* Delete document */}
                           <button
                             onClick={() => handleDeleteDoc(doc.id, doc.original_filename)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50"
+                            className="p-1.5 text-slate-400 hover:text-noc-rose rounded-lg hover:bg-noc-rose/10 transition-colors"
                             title="Delete document and purge vectors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -377,29 +358,36 @@ export const CategoryPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-noc-panel rounded-2xl shadow-noc border border-noc-border overflow-hidden">
                 {data.chats.length === 0 ? (
-                  <div className="p-12 text-center text-slate-400 text-sm">No chats promoted to this category yet.</div>
+                  <div className="p-12 text-center text-slate-500 text-sm">
+                    No chats promoted to this category yet.
+                  </div>
                 ) : (
-                  <div className="divide-y divide-slate-100">
+                  <div className="divide-y divide-noc-border">
                     {data.chats.map((chat) => (
-                      <div key={chat.id} className="p-4 flex items-center justify-between gap-4">
+                      <div
+                        key={chat.id}
+                        className="p-4 flex items-center justify-between gap-4 hover:bg-noc-surface/50 transition-colors"
+                      >
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-800 truncate">{chat.preview}</p>
-                          <p className="text-xs text-slate-400 mt-0.5">{chat.message_count} messages • #{chat.id.slice(-6)}</p>
+                          <p className="text-sm font-semibold text-white truncate">{chat.preview}</p>
+                          <p className="text-xs text-slate-400 mt-0.5 font-mono">
+                            {chat.message_count} messages • #{chat.id.slice(-6)}
+                          </p>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             type="button"
                             onClick={() => handleChatPreview(chat.id, chat.preview)}
-                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold"
+                            className="px-3 py-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border text-slate-200 rounded-lg text-xs font-semibold transition-colors"
                           >
                             View
                           </button>
                           <button
                             onClick={() => handleRemoveChat(chat.id)}
-                            className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg text-xs font-semibold flex items-center gap-1"
+                            className="px-3 py-1.5 bg-noc-amber/15 hover:bg-noc-amber/25 text-noc-amber border border-noc-amber/30 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
                           >
                             <RotateCcw className="w-3.5 h-3.5" /> Remove from Reference
                           </button>
@@ -414,16 +402,14 @@ export const CategoryPage: React.FC = () => {
         )}
       </main>
 
-
       {/* Document Preview Modal */}
-
       {isPreviewOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-noc-panel border border-noc-border shadow-2xl text-slate-100">
+            <div className="flex items-center justify-between border-b border-noc-border px-5 py-4">
               <div className="flex min-w-0 items-center gap-2">
-                <FileText className="h-5 w-5 shrink-0 text-blue-600" />
-                <h2 className="truncate text-base font-semibold text-slate-800">
+                <FileText className="h-5 w-5 shrink-0 text-noc-cyan" />
+                <h2 className="truncate text-base font-semibold text-white">
                   {previewFileName}
                 </h2>
               </div>
@@ -436,41 +422,37 @@ export const CategoryPage: React.FC = () => {
                   }
                   setIsPreviewOpen(false);
                 }}
-                className="ml-4 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                className="ml-4 rounded-lg p-1.5 text-slate-400 hover:bg-noc-surface hover:text-white transition-colors"
               >
-                Close
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-
-            <div className="min-h-0 flex-1 overflow-auto p-5">
+            <div className="min-h-0 flex-1 overflow-auto p-5 bg-noc-bg">
               {isPreviewLoading ? (
                 <p className="py-8 text-center text-sm text-slate-500">
                   Loading preview...
                 </p>
-              ) :  previewMode === 'document' && previewType === 'docx' ? (
-              <div
-                ref={docxPreviewRef}
-                className="docx-preview-container min-w-0"
-              />
+              ) : previewMode === 'document' && previewType === 'docx' ? (
+                <div
+                  ref={docxPreviewRef}
+                  className="docx-preview-container min-w-0 bg-white text-slate-900 p-4 rounded-xl"
+                />
               ) : previewMode === 'document' && previewType === 'pdf' ? (
-              <iframe
-                src={previewContent}
-                title={previewFileName}
-                className="h-[70vh] w-full rounded-lg border border-slate-200"
-              />
+                <iframe
+                  src={previewContent}
+                  title={previewFileName}
+                  className="h-[70vh] w-full rounded-lg border border-noc-border"
+                />
               ) : (
-              <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-6 text-slate-700">
-                {previewContent}
-              </pre>
-)}
+                <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-6 text-slate-200">
+                  {previewContent}
+                </pre>
+              )}
             </div>
-
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

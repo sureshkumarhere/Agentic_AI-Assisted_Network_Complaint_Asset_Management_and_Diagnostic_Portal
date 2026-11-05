@@ -191,7 +191,7 @@ export const AdminSettings: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base font-bold tracking-tight">System & Admin Settings</h1>
-                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-blue-500/30 text-blue-200 border border-blue-400/30">
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-noc-surface0/30 text-blue-200 border border-blue-400/30">
                   .env & DB Managed
                 </span>
               </div>
@@ -234,13 +234,13 @@ export const AdminSettings: React.FC = () => {
       <main className="max-w-7xl mx-auto px-6 py-6 w-full flex-1 flex flex-col md:flex-row gap-6">
         {/* Navigation Sidebar */}
         <aside className="w-full md:w-64 shrink-0 space-y-2">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-3 space-y-1">
+          <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-3 space-y-1">
             <button
               onClick={() => setActiveTab('agent')}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'agent'
-                  ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-indigo-700 border border-indigo-200 shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
               <span className="flex items-center gap-2.5">
@@ -249,7 +249,7 @@ export const AdminSettings: React.FC = () => {
               </span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${
-                  formData.AGENT_ENABLED ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
+                  formData.AGENT_ENABLED ? 'bg-emerald-100 text-emerald-700' : 'bg-noc-surface text-slate-400'
                 }`}
               >
                 {formData.AGENT_ENABLED ? 'ACTIVE' : 'OFF'}
@@ -260,8 +260,8 @@ export const AdminSettings: React.FC = () => {
               onClick={() => setActiveTab('email')}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'email'
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-blue-700 border border-blue-200 shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
               <span className="flex items-center gap-2.5">
@@ -277,8 +277,8 @@ export const AdminSettings: React.FC = () => {
               onClick={() => setActiveTab('llm')}
               className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'llm'
-                  ? 'bg-purple-50 text-purple-700 border border-purple-200 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-purple-700 border border-purple-200 shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
               <Cpu className={`w-4 h-4 ${activeTab === 'llm' ? 'text-purple-600' : 'text-slate-400'}`} />
@@ -289,8 +289,8 @@ export const AdminSettings: React.FC = () => {
               onClick={() => setActiveTab('lifecycle')}
               className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'lifecycle'
-                  ? 'bg-amber-50 text-amber-800 border border-amber-200 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-amber-800 border border-amber-200 shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
               <Clock className={`w-4 h-4 ${activeTab === 'lifecycle' ? 'text-amber-600' : 'text-slate-400'}`} />
@@ -301,8 +301,8 @@ export const AdminSettings: React.FC = () => {
               onClick={() => setActiveTab('security')}
               className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'security'
-                  ? 'bg-rose-50 text-rose-700 border border-rose-200 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-rose-700 border border-rose-200 shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
               <ShieldCheck className={`w-4 h-4 ${activeTab === 'security' ? 'text-rose-600' : 'text-slate-400'}`} />
@@ -313,11 +313,11 @@ export const AdminSettings: React.FC = () => {
               onClick={() => setActiveTab('general')}
               className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'general'
-                  ? 'bg-slate-100 text-slate-800 border border-slate-300 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  ? 'bg-noc-surface text-slate-100 border border-noc-border shadow-sm'
+                  : 'text-slate-300 hover:bg-noc-surface/50'
               }`}
             >
-              <Building className={`w-4 h-4 ${activeTab === 'general' ? 'text-slate-700' : 'text-slate-400'}`} />
+              <Building className={`w-4 h-4 ${activeTab === 'general' ? 'text-slate-200' : 'text-slate-400'}`} />
               Campus & System
             </button>
           </div>
@@ -329,7 +329,7 @@ export const AdminSettings: React.FC = () => {
               Live Hot-Reloading
             </div>
             <p className="text-[11px] text-slate-300 leading-relaxed">
-              Updates saved on this page are stored in the database, mirrored to the <code className="text-amber-300 bg-white/10 px-1 rounded">.env</code> file, and applied immediately without requiring a service restart.
+              Updates saved on this page are stored in the database, mirrored to the <code className="text-amber-300 bg-noc-surface px-1 rounded">.env</code> file, and applied immediately without requiring a service restart.
             </p>
           </div>
         </aside>
@@ -341,7 +341,7 @@ export const AdminSettings: React.FC = () => {
             <div
               className={`p-3.5 rounded-xl text-xs flex items-center gap-2.5 border shadow-sm transition-all ${
                 message.type === 'success'
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  ? 'bg-noc-surface text-emerald-800 border-emerald-200'
                   : 'bg-red-50 text-red-800 border-red-200'
               }`}
             >
@@ -355,7 +355,7 @@ export const AdminSettings: React.FC = () => {
           )}
 
           {loading ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-xs">
+            <div className="bg-noc-panel rounded-2xl border border-noc-border p-12 text-center text-slate-400 text-xs">
               Loading settings configuration...
             </div>
           ) : (
@@ -364,18 +364,18 @@ export const AdminSettings: React.FC = () => {
               {activeTab === 'agent' && (
                 <div className="space-y-5">
                   {/* Master Switch Card */}
-                  <div className="bg-white rounded-2xl border border-indigo-100 shadow-sm p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-full blur-2xl pointer-events-none"></div>
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-noc-surface/60 rounded-full blur-2xl pointer-events-none"></div>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Bot className="w-5 h-5 text-indigo-600" />
-                          <h2 className="text-base font-bold text-slate-900">Module 2 Agentic Autonomous Engine</h2>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                          <h2 className="text-base font-bold text-white">Module 2 Agentic Autonomous Engine</h2>
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-noc-surface text-slate-300 border border-noc-border">
                             AGENT_ENABLED
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 max-w-xl">
+                        <p className="text-xs text-slate-400 max-w-xl">
                           Toggle all autonomous AI workflows for student complaints. When enabled, new tickets are evaluated by LLM router, cluster fault matcher, priority estimator, and automated technician assignment pipeline.
                         </p>
                       </div>
@@ -386,22 +386,22 @@ export const AdminSettings: React.FC = () => {
                           onChange={(e) => handleChange('AGENT_ENABLED', e.target.checked)}
                           className="sr-only peer"
                         />
-                        <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
+                        <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-noc-border after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
                       </label>
                     </div>
                   </div>
 
                   {/* Assignment Execution Mode */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <Zap className="w-4 h-4 text-amber-500" />
-                        <h3 className="text-sm font-bold text-slate-900">Technician Assignment Execution Mode</h3>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                        <h3 className="text-sm font-bold text-white">Technician Assignment Execution Mode</h3>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-surface text-slate-300">
                           AGENT_ASSIGNMENT_MODE
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         Choose whether the agent dispatches tickets automatically, creates pending suggestions, or remains disabled.
                       </p>
                     </div>
@@ -429,18 +429,18 @@ export const AdminSettings: React.FC = () => {
                           onClick={() => handleChange('AGENT_ASSIGNMENT_MODE', item.mode)}
                           className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                             formData.AGENT_ASSIGNMENT_MODE === item.mode
-                              ? 'border-indigo-600 bg-indigo-50/50 shadow-sm'
-                              : 'border-slate-200 hover:border-slate-300 bg-white'
+                              ? 'border-indigo-600 bg-noc-surface/60 shadow-sm'
+                              : 'border-noc-border hover:border-noc-border bg-noc-bg text-slate-100'
                           }`}
                         >
                           <div>
-                            <div className="flex items-center justify-between font-bold text-xs text-slate-800 mb-1">
+                            <div className="flex items-center justify-between font-bold text-xs text-slate-100 mb-1">
                               <span>{item.title}</span>
                               {formData.AGENT_ASSIGNMENT_MODE === item.mode && (
                                 <Check className="w-3.5 h-3.5 text-indigo-600" />
                               )}
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed">{item.desc}</p>
+                            <p className="text-[11px] text-slate-400 leading-relaxed">{item.desc}</p>
                           </div>
                         </div>
                       ))}
@@ -448,18 +448,18 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* LLM Categorization & Rationale */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-purple-600" />
                       Classification & Confidence Calibration
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between">
                         <div className="space-y-0.5 pr-2">
-                          <span className="font-bold text-slate-800">Use LLM Classification Router</span>
-                          <p className="text-[11px] text-slate-500 font-mono">AGENT_USE_LLM</p>
-                          <p className="text-[11px] text-slate-500">
+                          <span className="font-bold text-slate-100">Use LLM Classification Router</span>
+                          <p className="text-[11px] text-slate-400 font-mono">AGENT_USE_LLM</p>
+                          <p className="text-[11px] text-slate-400">
                             When disabled, falls back strictly to rule-based keyword classification.
                           </p>
                         </div>
@@ -471,11 +471,11 @@ export const AdminSettings: React.FC = () => {
                         />
                       </div>
 
-                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between">
                         <div className="space-y-0.5 pr-2">
-                          <span className="font-bold text-slate-800">Friendly Natural Language Reason</span>
-                          <p className="text-[11px] text-slate-500 font-mono">AGENT_LLM_REASON</p>
-                          <p className="text-[11px] text-slate-500">
+                          <span className="font-bold text-slate-100">Friendly Natural Language Reason</span>
+                          <p className="text-[11px] text-slate-400 font-mono">AGENT_LLM_REASON</p>
+                          <p className="text-[11px] text-slate-400">
                             Rewrites candidate math scores into friendly, natural English explanation.
                           </p>
                         </div>
@@ -489,16 +489,16 @@ export const AdminSettings: React.FC = () => {
                     </div>
 
                     {/* Confidence Threshold Slider */}
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="font-bold text-xs text-slate-800">AI Category Adoption Threshold</span>
-                          <span className="text-[10px] font-mono text-slate-500 ml-2">AGENT_CATEGORY_MIN_CONFIDENCE</span>
-                          <p className="text-[11px] text-slate-500">
+                          <span className="font-bold text-xs text-slate-100">AI Category Adoption Threshold</span>
+                          <span className="text-[10px] font-mono text-slate-400 ml-2">AGENT_CATEGORY_MIN_CONFIDENCE</span>
+                          <p className="text-[11px] text-slate-400">
                             Minimum AI confidence required to override student's self-reported problem category.
                           </p>
                         </div>
-                        <span className="text-sm font-mono font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-lg">
+                        <span className="text-sm font-mono font-bold text-indigo-600 bg-noc-surface border border-indigo-200 px-2 py-0.5 rounded-lg">
                           {Math.round((formData.AGENT_CATEGORY_MIN_CONFIDENCE || 0.75) * 100)}%
                         </span>
                       </div>
@@ -520,74 +520,74 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* Priority Escalation & Clusters */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-blue-600" />
                       Priority Escalation & Fault Clustering Windows
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">High Impact User Threshold</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_HIGH_IMPACT_USERS</p>
+                        <label className="font-bold text-slate-200">High Impact User Threshold</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_HIGH_IMPACT_USERS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_HIGH_IMPACT_USERS ?? 5}
                           onChange={(e) => handleChange('AGENT_HIGH_IMPACT_USERS', parseInt(e.target.value) || 5)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
                         />
                         <span className="text-[10px] text-slate-400">Escalates ticket priority +1 level</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Critical Impact User Threshold</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_CRITICAL_IMPACT_USERS</p>
+                        <label className="font-bold text-slate-200">Critical Impact User Threshold</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_CRITICAL_IMPACT_USERS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_CRITICAL_IMPACT_USERS ?? 20}
                           onChange={(e) => handleChange('AGENT_CRITICAL_IMPACT_USERS', parseInt(e.target.value) || 20)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
                         />
                         <span className="text-[10px] text-slate-400">Forces ticket to CRITICAL immediately</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Similar Fault Window (Hours)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_SIMILAR_WINDOW_HOURS</p>
+                        <label className="font-bold text-slate-200">Similar Fault Window (Hours)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_SIMILAR_WINDOW_HOURS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_SIMILAR_WINDOW_HOURS ?? 6}
                           onChange={(e) => handleChange('AGENT_SIMILAR_WINDOW_HOURS', parseInt(e.target.value) || 6)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
                         />
                         <span className="text-[10px] text-slate-400">Time window for open cluster grouping</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Historical Fault Lookback (Days)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_PREVIOUS_FAULT_DAYS</p>
+                        <label className="font-bold text-slate-200">Historical Fault Lookback (Days)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_PREVIOUS_FAULT_DAYS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_PREVIOUS_FAULT_DAYS ?? 90}
                           onChange={(e) => handleChange('AGENT_PREVIOUS_FAULT_DAYS', parseInt(e.target.value) || 90)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
                         />
                         <span className="text-[10px] text-slate-400">Days to search for past resolved solutions</span>
                       </div>
 
                       <div className="space-y-1 sm:col-span-2">
-                        <label className="font-bold text-slate-700">High Priority Locations (Comma-separated)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_PRIORITY_LOCATIONS</p>
+                        <label className="font-bold text-slate-200">High Priority Locations (Comma-separated)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_PRIORITY_LOCATIONS</p>
                         <input
                           type="text"
                           placeholder="SVBH Hostel, Academic Campus, Administrative Block"
                           value={formData.AGENT_PRIORITY_LOCATIONS ?? ''}
                           onChange={(e) => handleChange('AGENT_PRIORITY_LOCATIONS', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs focus:ring-1 focus:ring-indigo-500"
                         />
                         <span className="text-[10px] text-slate-400">Matches complaint locations to boost priority</span>
                       </div>
@@ -595,55 +595,55 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* Resilience, Sweeps & RAG */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Clock className="w-4 h-4 text-emerald-600" />
                       Background Worker Resilience & RAG Indexing
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Stuck Job Timeout (Minutes)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_STUCK_MINUTES</p>
+                        <label className="font-bold text-slate-200">Stuck Job Timeout (Minutes)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_STUCK_MINUTES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_STUCK_MINUTES ?? 10}
                           onChange={(e) => handleChange('AGENT_STUCK_MINUTES', parseInt(e.target.value) || 10)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Unassigned Sweep (Minutes)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_SWEEP_MINUTES</p>
+                        <label className="font-bold text-slate-200">Unassigned Sweep (Minutes)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_SWEEP_MINUTES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_SWEEP_MINUTES ?? 5}
                           onChange={(e) => handleChange('AGENT_SWEEP_MINUTES', parseInt(e.target.value) || 5)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Job Retries</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AGENT_MAX_ATTEMPTS</p>
+                        <label className="font-bold text-slate-200">Max Job Retries</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AGENT_MAX_ATTEMPTS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AGENT_MAX_ATTEMPTS ?? 3}
                           onChange={(e) => handleChange('AGENT_MAX_ATTEMPTS', parseInt(e.target.value) || 3)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs pt-2">
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div className="p-3 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between">
                         <div className="space-y-0.5 pr-2">
-                          <span className="font-bold text-slate-800">Auto RAG Index Closed</span>
-                          <p className="text-[10px] text-slate-500 font-mono">RAG_AUTO_INDEX_CLOSED</p>
+                          <span className="font-bold text-slate-100">Auto RAG Index Closed</span>
+                          <p className="text-[10px] text-slate-400 font-mono">RAG_AUTO_INDEX_CLOSED</p>
                         </div>
                         <input
                           type="checkbox"
@@ -653,10 +653,10 @@ export const AdminSettings: React.FC = () => {
                         />
                       </div>
 
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div className="p-3 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between">
                         <div className="space-y-0.5 pr-2">
-                          <span className="font-bold text-slate-800">Index Auto-Closed</span>
-                          <p className="text-[10px] text-slate-500 font-mono">RAG_INCLUDE_AUTO_CLOSED</p>
+                          <span className="font-bold text-slate-100">Index Auto-Closed</span>
+                          <p className="text-[10px] text-slate-400 font-mono">RAG_INCLUDE_AUTO_CLOSED</p>
                         </div>
                         <input
                           type="checkbox"
@@ -666,10 +666,10 @@ export const AdminSettings: React.FC = () => {
                         />
                       </div>
 
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div className="p-3 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between">
                         <div className="space-y-0.5 pr-2">
-                          <span className="font-bold text-slate-800">RAG Similarity Search</span>
-                          <p className="text-[10px] text-slate-500 font-mono">AGENT_USE_RAG_SIMILARITY</p>
+                          <span className="font-bold text-slate-100">RAG Similarity Search</span>
+                          <p className="text-[10px] text-slate-400 font-mono">AGENT_USE_RAG_SIMILARITY</p>
                         </div>
                         <input
                           type="checkbox"
@@ -687,22 +687,22 @@ export const AdminSettings: React.FC = () => {
               {activeTab === 'email' && (
                 <div className="space-y-5">
                   {/* Admin Personal Email Alert Setting (Preserved original feature!) */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <div className="flex items-center gap-2 pb-2 border-b border-noc-border">
                       <Bell className="w-5 h-5 text-mnnit-gold" />
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900">Admin Notification Preferences</h3>
-                        <p className="text-xs text-slate-500">Personal alert subscriptions for your admin account.</p>
+                        <h3 className="text-sm font-bold text-white">Admin Notification Preferences</h3>
+                        <p className="text-xs text-slate-400">Personal alert subscriptions for your admin account.</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-200">
+                    <div className="flex items-center justify-between p-4 bg-noc-surface/50 rounded-xl border border-amber-200">
                       <div className="space-y-0.5 pr-4">
-                        <span className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                        <span className="font-bold text-slate-100 text-xs flex items-center gap-1.5">
                           <Bell className="w-4 h-4 text-amber-600" />
                           Email Alert on New Complaint Ticket
                         </span>
-                        <p className="text-slate-600 text-[11px] leading-relaxed">
+                        <p className="text-slate-300 text-[11px] leading-relaxed">
                           Receive immediate email notification copies whenever a student submits and verifies a new complaint ticket.
                         </p>
                       </div>
@@ -716,18 +716,18 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* Outbox & SMTP Server Configuration */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-blue-600" />
-                      <h3 className="text-sm font-bold text-slate-900">Email Delivery & SMTP Service</h3>
+                      <h3 className="text-sm font-bold text-white">Email Delivery & SMTP Service</h3>
                     </div>
 
                     {/* Delivery Backend Switch */}
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                       <div>
-                        <span className="font-bold text-slate-800">Email Dispatch Backend</span>
-                        <p className="text-[10px] text-slate-500 font-mono">EMAIL_BACKEND</p>
-                        <p className="text-[11px] text-slate-500">
+                        <span className="font-bold text-slate-100">Email Dispatch Backend</span>
+                        <p className="text-[10px] text-slate-400 font-mono">EMAIL_BACKEND</p>
+                        <p className="text-[11px] text-slate-400">
                           {formData.EMAIL_BACKEND === 'smtp'
                             ? 'Live SMTP delivery: Emails sent to actual mailboxes.'
                             : 'Console / Mock delivery: Emails logged to backend stdout outbox (safe for development).'}
@@ -736,7 +736,7 @@ export const AdminSettings: React.FC = () => {
                       <select
                         value={formData.EMAIL_BACKEND || 'console'}
                         onChange={(e) => handleChange('EMAIL_BACKEND', e.target.value)}
-                        className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-bold text-xs"
+                        className="px-3 py-1.5 bg-noc-panel border border-noc-border rounded-xl font-bold text-xs"
                       >
                         <option value="console">console (Development Mock)</option>
                         <option value="smtp">smtp (Live Mail Server)</option>
@@ -746,84 +746,84 @@ export const AdminSettings: React.FC = () => {
                     {/* SMTP Fields */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">SMTP Host</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SMTP_HOST</p>
+                        <label className="font-bold text-slate-200">SMTP Host</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SMTP_HOST</p>
                         <input
                           type="text"
                           placeholder="localhost or smtp.office365.com"
                           value={formData.SMTP_HOST || ''}
                           onChange={(e) => handleChange('SMTP_HOST', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">SMTP Port</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SMTP_PORT</p>
+                        <label className="font-bold text-slate-200">SMTP Port</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SMTP_PORT</p>
                         <input
                           type="number"
                           placeholder="25, 587, or 465"
                           value={formData.SMTP_PORT || 25}
                           onChange={(e) => handleChange('SMTP_PORT', parseInt(e.target.value) || 25)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">SMTP Username</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SMTP_USER</p>
+                        <label className="font-bold text-slate-200">SMTP Username</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SMTP_USER</p>
                         <input
                           type="text"
                           placeholder="smtp_username@mnnit.ac.in"
                           value={formData.SMTP_USER || ''}
                           onChange={(e) => handleChange('SMTP_USER', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">
+                        <label className="font-bold text-slate-200">
                           SMTP Password {serverSettings?.email?.has_smtp_password && '(Configured)'}
                         </label>
-                        <p className="text-[10px] text-slate-500 font-mono">SMTP_PASSWORD</p>
+                        <p className="text-[10px] text-slate-400 font-mono">SMTP_PASSWORD</p>
                         <input
                           type="password"
                           placeholder={serverSettings?.email?.has_smtp_password ? '•••••••• (Leave blank to keep)' : 'Enter password'}
                           value={newApiKeys.smtp_password || ''}
                           onChange={(e) => handleApiKeyChange('smtp_password', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">From Address</label>
-                        <p className="text-[10px] text-slate-500 font-mono">EMAIL_FROM</p>
+                        <label className="font-bold text-slate-200">From Address</label>
+                        <p className="text-[10px] text-slate-400 font-mono">EMAIL_FROM</p>
                         <input
                           type="text"
                           placeholder="noreply@mnnit.ac.in"
                           value={formData.EMAIL_FROM || ''}
                           onChange={(e) => handleChange('EMAIL_FROM', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">In-Charge CC Emails (Comma-separated)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">INCHARGE_CC_EMAILS</p>
+                        <label className="font-bold text-slate-200">In-Charge CC Emails (Comma-separated)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">INCHARGE_CC_EMAILS</p>
                         <input
                           type="text"
                           placeholder="incharge@mnnit.ac.in, head.cc@mnnit.ac.in"
                           value={formData.INCHARGE_CC_EMAILS || ''}
                           onChange={(e) => handleChange('INCHARGE_CC_EMAILS', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-mono"
                         />
                       </div>
                     </div>
 
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs mt-2">
+                    <div className="p-3 bg-noc-surface/50 rounded-xl border border-noc-border flex items-center justify-between text-xs mt-2">
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-800">Use TLS Encryption</span>
-                        <p className="text-[10px] text-slate-500 font-mono">SMTP_USE_TLS</p>
+                        <span className="font-bold text-slate-100">Use TLS Encryption</span>
+                        <p className="text-[10px] text-slate-400 font-mono">SMTP_USE_TLS</p>
                       </div>
                       <input
                         type="checkbox"
@@ -840,28 +840,28 @@ export const AdminSettings: React.FC = () => {
               {activeTab === 'llm' && (
                 <div className="space-y-5">
                   {/* Fallback Priority Order */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-3">
                     <div className="flex items-center gap-2">
                       <Cpu className="w-4 h-4 text-purple-600" />
-                      <h3 className="text-sm font-bold text-slate-900">Multi-Provider Fallback Priority Order</h3>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                      <h3 className="text-sm font-bold text-white">Multi-Provider Fallback Priority Order</h3>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-surface text-slate-300">
                         LLM_PROVIDER_ORDER
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-400">
                       Comma-separated failover sequence. System attempts each provider in order until successful response is received.
                     </p>
                     <input
                       type="text"
                       value={formData.LLM_PROVIDER_ORDER || ''}
                       onChange={(e) => handleChange('LLM_PROVIDER_ORDER', e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs text-purple-800 font-bold"
+                      className="w-full px-3.5 py-2.5 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs text-purple-800 font-bold"
                     />
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {(formData.LLM_PROVIDER_ORDER || '').split(',').map((p: string, i: number) => (
                         <span
                           key={i}
-                          className="text-[11px] font-mono px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg flex items-center gap-1"
+                          className="text-[11px] font-mono px-2.5 py-1 bg-noc-surface text-purple-700 border border-purple-200 rounded-lg flex items-center gap-1"
                         >
                           <span className="w-4 h-4 rounded-full bg-purple-200 text-purple-800 font-bold flex items-center justify-center text-[9px]">
                             {i + 1}
@@ -873,17 +873,17 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* Provider Models & API Keys */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-indigo-600" />
                       Models & API Credentials
                     </h3>
 
                     {/* Gemini */}
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 text-xs">
+                    <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border space-y-3 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        <span className="font-bold text-slate-100 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-noc-surface0"></span>
                           Google Gemini Provider
                         </span>
                         <span
@@ -901,41 +901,41 @@ export const AdminSettings: React.FC = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-600">Model Name</label>
+                          <label className="text-[11px] font-semibold text-slate-300">Model Name</label>
                           <input
                             type="text"
                             value={formData.GEMINI_MODEL || ''}
                             onChange={(e) => handleChange('GEMINI_MODEL', e.target.value)}
-                            className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                            className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-600">Timeout (Seconds)</label>
+                          <label className="text-[11px] font-semibold text-slate-300">Timeout (Seconds)</label>
                           <input
                             type="number"
                             value={formData.GEMINI_TIMEOUT || 60}
                             onChange={(e) => handleChange('GEMINI_TIMEOUT', parseFloat(e.target.value) || 60)}
-                            className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                            className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-600">Update API Key</label>
+                          <label className="text-[11px] font-semibold text-slate-300">Update API Key</label>
                           <input
                             type="password"
                             placeholder="Enter new Gemini API key"
                             value={newApiKeys.gemini || ''}
                             onChange={(e) => handleApiKeyChange('gemini', e.target.value)}
-                            className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                            className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                           />
                         </div>
                       </div>
                     </div>
 
                     {/* OpenAI */}
-                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 text-xs">
+                    <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border space-y-3 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span className="font-bold text-slate-100 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-noc-surface0"></span>
                           OpenAI Provider
                         </span>
                         <span
@@ -953,22 +953,22 @@ export const AdminSettings: React.FC = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-600">Model Name (OPENAI_MODEL)</label>
+                          <label className="text-[11px] font-semibold text-slate-300">Model Name (OPENAI_MODEL)</label>
                           <input
                             type="text"
                             value={formData.OPENAI_MODEL || ''}
                             onChange={(e) => handleChange('OPENAI_MODEL', e.target.value)}
-                            className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                            className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-slate-600">Update OpenAI API Key</label>
+                          <label className="text-[11px] font-semibold text-slate-300">Update OpenAI API Key</label>
                           <input
                             type="password"
                             placeholder="sk-proj-..."
                             value={newApiKeys.openai || ''}
                             onChange={(e) => handleApiKeyChange('openai', e.target.value)}
-                            className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                            className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                           />
                         </div>
                       </div>
@@ -977,10 +977,10 @@ export const AdminSettings: React.FC = () => {
                     {/* Grok & Claude Anthropic */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                       {/* Grok */}
-                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-slate-800">xAI Grok</span>
-                          <span className="text-[10px] font-mono text-slate-500">
+                          <span className="font-bold text-slate-100">xAI Grok</span>
+                          <span className="text-[10px] font-mono text-slate-400">
                             {serverSettings?.llm?.has_grok_key ? 'Key configured' : 'No key'}
                           </span>
                         </div>
@@ -989,22 +989,22 @@ export const AdminSettings: React.FC = () => {
                           placeholder="GROK_MODEL (e.g. grok-beta)"
                           value={formData.GROK_MODEL || ''}
                           onChange={(e) => handleChange('GROK_MODEL', e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                          className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                         />
                         <input
                           type="password"
                           placeholder="Update Grok Key (gsk_...)"
                           value={newApiKeys.grok || ''}
                           onChange={(e) => handleApiKeyChange('grok', e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                          className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                         />
                       </div>
 
                       {/* Anthropic Claude */}
-                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <div className="p-4 bg-noc-surface/50 rounded-xl border border-noc-border space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-slate-800">Anthropic Claude</span>
-                          <span className="text-[10px] font-mono text-slate-500">
+                          <span className="font-bold text-slate-100">Anthropic Claude</span>
+                          <span className="text-[10px] font-mono text-slate-400">
                             {serverSettings?.llm?.has_llm_key ? 'Key configured' : 'No key'}
                           </span>
                         </div>
@@ -1013,14 +1013,14 @@ export const AdminSettings: React.FC = () => {
                           placeholder="LLM_MODEL_CHAT"
                           value={formData.LLM_MODEL_CHAT || ''}
                           onChange={(e) => handleChange('LLM_MODEL_CHAT', e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                          className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                         />
                         <input
                           type="password"
                           placeholder="Update Anthropic Key (sk-ant-...)"
                           value={newApiKeys.llm || ''}
                           onChange={(e) => handleApiKeyChange('llm', e.target.value)}
-                          className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs"
+                          className="w-full px-3 py-1.5 bg-noc-panel border border-noc-border rounded-lg font-mono text-xs"
                         />
                       </div>
                     </div>
@@ -1031,48 +1031,48 @@ export const AdminSettings: React.FC = () => {
               {/* TAB 4: LIFECYCLE & POLICIES */}
               {activeTab === 'lifecycle' && (
                 <div className="space-y-5">
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Clock className="w-4 h-4 text-amber-600" />
                       Complaint Lifecycle & Auto-Closure
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Auto-Close Delay (Days)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AUTO_CLOSE_DAYS</p>
+                        <label className="font-bold text-slate-200">Auto-Close Delay (Days)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AUTO_CLOSE_DAYS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AUTO_CLOSE_DAYS ?? 3}
                           onChange={(e) => handleChange('AUTO_CLOSE_DAYS', parseInt(e.target.value) || 3)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                         <span className="text-[10px] text-slate-400">Days after resolution without student dispute</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Auto-Close Sweep Interval (Min)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">AUTO_CLOSE_CHECK_MINUTES</p>
+                        <label className="font-bold text-slate-200">Auto-Close Sweep Interval (Min)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">AUTO_CLOSE_CHECK_MINUTES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.AUTO_CLOSE_CHECK_MINUTES ?? 30}
                           onChange={(e) => handleChange('AUTO_CLOSE_CHECK_MINUTES', parseInt(e.target.value) || 30)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                         <span className="text-[10px] text-slate-400">Worker check period</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Action Token Expiry (Days)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">ACTION_TOKEN_EXPIRY_DAYS</p>
+                        <label className="font-bold text-slate-200">Action Token Expiry (Days)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">ACTION_TOKEN_EXPIRY_DAYS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.ACTION_TOKEN_EXPIRY_DAYS ?? 14}
                           onChange={(e) => handleChange('ACTION_TOKEN_EXPIRY_DAYS', parseInt(e.target.value) || 14)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                         <span className="text-[10px] text-slate-400">Confirm & rating link validity</span>
                       </div>
@@ -1080,20 +1080,20 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   {/* Scoring Formula & Policy Limits */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-blue-600" />
                       Leaderboard Scoring & Chat Limits
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Score Formula</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SCORE_FORMULA</p>
+                        <label className="font-bold text-slate-200">Score Formula</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SCORE_FORMULA</p>
                         <select
                           value={formData.SCORE_FORMULA || 'average'}
                           onChange={(e) => handleChange('SCORE_FORMULA', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs font-bold"
                         >
                           <option value="average">average (Arithmetic Mean)</option>
                           <option value="weighted">weighted (Bayesian Prior)</option>
@@ -1101,48 +1101,48 @@ export const AdminSettings: React.FC = () => {
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Score Prior Mean</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SCORE_PRIOR_MEAN</p>
+                        <label className="font-bold text-slate-200">Score Prior Mean</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SCORE_PRIOR_MEAN</p>
                         <input
                           type="number"
                           step="0.1"
                           value={formData.SCORE_PRIOR_MEAN ?? 3.5}
                           onChange={(e) => handleChange('SCORE_PRIOR_MEAN', parseFloat(e.target.value) || 3.5)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Score Prior Sample Count</label>
-                        <p className="text-[10px] text-slate-500 font-mono">SCORE_PRIOR_COUNT</p>
+                        <label className="font-bold text-slate-200">Score Prior Sample Count</label>
+                        <p className="text-[10px] text-slate-400 font-mono">SCORE_PRIOR_COUNT</p>
                         <input
                           type="number"
                           step="1"
                           value={formData.SCORE_PRIOR_COUNT ?? 5.0}
                           onChange={(e) => handleChange('SCORE_PRIOR_COUNT', parseFloat(e.target.value) || 5.0)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Chat Messages / Session</label>
-                        <p className="text-[10px] text-slate-500 font-mono">MAX_CHAT_MESSAGES</p>
+                        <label className="font-bold text-slate-200">Max Chat Messages / Session</label>
+                        <p className="text-[10px] text-slate-400 font-mono">MAX_CHAT_MESSAGES</p>
                         <input
                           type="number"
                           value={formData.MAX_CHAT_MESSAGES ?? 10}
                           onChange={(e) => handleChange('MAX_CHAT_MESSAGES', parseInt(e.target.value) || 10)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Upload Size (MB)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">MAX_UPLOAD_MB</p>
+                        <label className="font-bold text-slate-200">Max Upload Size (MB)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">MAX_UPLOAD_MB</p>
                         <input
                           type="number"
                           value={formData.MAX_UPLOAD_MB ?? 10}
                           onChange={(e) => handleChange('MAX_UPLOAD_MB', parseInt(e.target.value) || 10)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
                     </div>
@@ -1153,22 +1153,22 @@ export const AdminSettings: React.FC = () => {
               {/* TAB 5: SECURITY & OTP */}
               {activeTab === 'security' && (
                 <div className="space-y-5">
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4 text-rose-600" />
                       Student OTP Authentication & Email Domain Restriction
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                       <div className="space-y-1 sm:col-span-2">
-                        <label className="font-bold text-slate-700">Allowed Student Email Domain</label>
-                        <p className="text-[10px] text-slate-500 font-mono">ALLOWED_EMAIL_DOMAIN</p>
+                        <label className="font-bold text-slate-200">Allowed Student Email Domain</label>
+                        <p className="text-[10px] text-slate-400 font-mono">ALLOWED_EMAIL_DOMAIN</p>
                         <input
                           type="text"
                           placeholder="mnnit.ac.in"
                           value={formData.ALLOWED_EMAIL_DOMAIN || ''}
                           onChange={(e) => handleChange('ALLOWED_EMAIL_DOMAIN', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-800"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs font-bold text-slate-100"
                         />
                         <span className="text-[10px] text-slate-400">
                           Students can only register complaints using addresses matching this domain.
@@ -1176,85 +1176,85 @@ export const AdminSettings: React.FC = () => {
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">OTP Validity (Minutes)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">OTP_EXPIRE_MINUTES</p>
+                        <label className="font-bold text-slate-200">OTP Validity (Minutes)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">OTP_EXPIRE_MINUTES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.OTP_EXPIRE_MINUTES ?? 10}
                           onChange={(e) => handleChange('OTP_EXPIRE_MINUTES', parseInt(e.target.value) || 10)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">OTP Resend Cooldown (Seconds)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">OTP_RESEND_SECONDS</p>
+                        <label className="font-bold text-slate-200">OTP Resend Cooldown (Seconds)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">OTP_RESEND_SECONDS</p>
                         <input
                           type="number"
                           min="10"
                           value={formData.OTP_RESEND_SECONDS ?? 60}
                           onChange={(e) => handleChange('OTP_RESEND_SECONDS', parseInt(e.target.value) || 60)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Incorrect OTP Attempts</label>
-                        <p className="text-[10px] text-slate-500 font-mono">OTP_MAX_ATTEMPTS</p>
+                        <label className="font-bold text-slate-200">Max Incorrect OTP Attempts</label>
+                        <p className="text-[10px] text-slate-400 font-mono">OTP_MAX_ATTEMPTS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.OTP_MAX_ATTEMPTS ?? 5}
                           onChange={(e) => handleChange('OTP_MAX_ATTEMPTS', parseInt(e.target.value) || 5)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Resends Per Session</label>
-                        <p className="text-[10px] text-slate-500 font-mono">OTP_MAX_RESENDS</p>
+                        <label className="font-bold text-slate-200">Max Resends Per Session</label>
+                        <p className="text-[10px] text-slate-400 font-mono">OTP_MAX_RESENDS</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.OTP_MAX_RESENDS ?? 3}
                           onChange={(e) => handleChange('OTP_MAX_RESENDS', parseInt(e.target.value) || 3)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Staff Login Security */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-slate-700" />
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-slate-200" />
                       Staff Login Lockout Policies
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Max Login Failures</label>
-                        <p className="text-[10px] text-slate-500 font-mono">LOGIN_MAX_FAILURES</p>
+                        <label className="font-bold text-slate-200">Max Login Failures</label>
+                        <p className="text-[10px] text-slate-400 font-mono">LOGIN_MAX_FAILURES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.LOGIN_MAX_FAILURES ?? 5}
                           onChange={(e) => handleChange('LOGIN_MAX_FAILURES', parseInt(e.target.value) || 5)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                         <span className="text-[10px] text-slate-400">Failed attempts before account lock</span>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Lockout Duration (Minutes)</label>
-                        <p className="text-[10px] text-slate-500 font-mono">LOGIN_LOCK_MINUTES</p>
+                        <label className="font-bold text-slate-200">Lockout Duration (Minutes)</label>
+                        <p className="text-[10px] text-slate-400 font-mono">LOGIN_LOCK_MINUTES</p>
                         <input
                           type="number"
                           min="1"
                           value={formData.LOGIN_LOCK_MINUTES ?? 15}
                           onChange={(e) => handleChange('LOGIN_LOCK_MINUTES', parseInt(e.target.value) || 15)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                         <span className="text-[10px] text-slate-400">Temporary lockout duration</span>
                       </div>
@@ -1266,48 +1266,48 @@ export const AdminSettings: React.FC = () => {
               {/* TAB 6: GENERAL & SYSTEM */}
               {activeTab === 'general' && (
                 <div className="space-y-5">
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                      <Building className="w-4 h-4 text-slate-700" />
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-4">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Building className="w-4 h-4 text-slate-200" />
                       Campus & Localization Configuration
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Institution Name</label>
-                        <p className="text-[10px] text-slate-500 font-mono">COLLEGE_NAME</p>
+                        <label className="font-bold text-slate-200">Institution Name</label>
+                        <p className="text-[10px] text-slate-400 font-mono">COLLEGE_NAME</p>
                         <input
                           type="text"
                           value={formData.COLLEGE_NAME || ''}
                           onChange={(e) => handleChange('COLLEGE_NAME', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl text-xs font-bold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="font-bold text-slate-700">Application Timezone</label>
-                        <p className="text-[10px] text-slate-500 font-mono">APP_TIMEZONE</p>
+                        <label className="font-bold text-slate-200">Application Timezone</label>
+                        <p className="text-[10px] text-slate-400 font-mono">APP_TIMEZONE</p>
                         <input
                           type="text"
                           value={formData.APP_TIMEZONE || 'Asia/Kolkata'}
                           onChange={(e) => handleChange('APP_TIMEZONE', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                          className="w-full px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Flow Trace (Optional Feature Branch Ready) */}
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
+                  <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-sm p-6 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-slate-900">LLM Execution Flow Tracing</h3>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          <h3 className="text-sm font-bold text-white">LLM Execution Flow Tracing</h3>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-surface text-indigo-700 border border-indigo-200">
                             FLOW_TRACE
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-400">
                           Enables step-by-step latency and LLM prompt tracing across pipeline stages (ready for feature branch integration).
                         </p>
                       </div>
@@ -1320,14 +1320,14 @@ export const AdminSettings: React.FC = () => {
                     </div>
 
                     <div className="pt-2 text-xs">
-                      <label className="font-bold text-slate-700">Slow Step Latency Warning (Milliseconds)</label>
-                      <p className="text-[10px] text-slate-500 font-mono mb-1">FLOW_TRACE_SLOW_MS</p>
+                      <label className="font-bold text-slate-200">Slow Step Latency Warning (Milliseconds)</label>
+                      <p className="text-[10px] text-slate-400 font-mono mb-1">FLOW_TRACE_SLOW_MS</p>
                       <input
                         type="number"
                         step="500"
                         value={formData.FLOW_TRACE_SLOW_MS ?? 3000}
                         onChange={(e) => handleChange('FLOW_TRACE_SLOW_MS', parseInt(e.target.value) || 3000)}
-                        className="w-full max-w-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs"
+                        className="w-full max-w-xs px-3 py-2 bg-noc-surface/50 border border-noc-border rounded-xl font-mono text-xs"
                       />
                     </div>
                   </div>
@@ -1335,12 +1335,12 @@ export const AdminSettings: React.FC = () => {
               )}
 
               {/* Floating Bottom Action Bar */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-4 flex items-center justify-between sticky bottom-4 z-20">
+              <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-lg p-4 flex items-center justify-between sticky bottom-4 z-20">
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleReset}
                     disabled={!isDirty || saving}
-                    className="flex items-center gap-1.5 px-4 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1.5 px-4 py-2 border border-noc-border hover:bg-noc-surface/50 text-slate-200 font-semibold rounded-xl text-xs transition disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     Discard Changes

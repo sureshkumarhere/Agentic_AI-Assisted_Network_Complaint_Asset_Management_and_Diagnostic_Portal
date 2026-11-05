@@ -1,3 +1,6 @@
+// MODULE: Complaint Management (Part 2) - this file belongs to the code for this module.
+// Manager Dashboard page providing complaint queues, assignment, technician status, reports, and leaderboard.
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchCurrentStaff } from '../../api/auth';
@@ -28,10 +31,8 @@ import {
   Shield,
   MapPin,
   AlertTriangle,
-  ArrowLeft,
-  Activity
+  ArrowLeft
 } from 'lucide-react';
-
 import logo from '../../assets/logo.jpeg';
 
 export const ManagerDashboard: React.FC = () => {
@@ -147,15 +148,15 @@ export const ManagerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
-      {/* Top NOC Header */}
-      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col font-sans">
+      {/* Top Header */}
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {userRole === 'ADMIN' && (
               <Link
                 to="/admin"
-                className="p-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-white transition-colors"
+                className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-slate-300 hover:text-white transition-colors"
                 title="Back to Admin Dashboard"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -167,27 +168,20 @@ export const ManagerDashboard: React.FC = () => {
               className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
             />
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
-                  INCIDENT DISPATCH & OPERATIONS // MANAGER
-                </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-highlight/10 text-noc-accent border border-noc-highlight/30 font-bold uppercase">
-                  NOC QUEUE
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Real-Time Triage, Field Technician Routing & SLA Management
-              </p>
+              <h1 className="text-base font-bold text-white tracking-tight">Manager Operations Dashboard</h1>
+              <p className="text-[11px] text-slate-400">Network Complaint Lifecycle &amp; Dispatch</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              to="/admin/network-assets"
-              className="hidden sm:inline-flex px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover rounded-lg text-xs font-mono text-slate-200 border border-noc-border transition-colors"
+            <button
+              onClick={loadData}
+              disabled={loading}
+              className="p-2 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-slate-300 hover:text-white transition-colors"
+              title="Refresh Queue"
             >
-              Network Assets {userRole === 'ADMIN' ? '' : '(Read-Only)'}
-            </Link>
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            </button>
             <button
               onClick={handleLogout}
               className="p-2 bg-noc-surface hover:bg-noc-rose/20 text-slate-300 hover:text-noc-rose rounded-lg border border-noc-border transition-colors cursor-pointer"
@@ -199,131 +193,117 @@ export const ManagerDashboard: React.FC = () => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
-        {/* Detail View Mode */}
         {selectedComplaint ? (
-          <ComplaintDetail
-            complaint={selectedComplaint}
-            userRole={userRole}
-            onBack={() => {
-              setSelectedComplaint(null);
-              setSelectedTicketId(null);
-            }}
-            onRefresh={() => handleSelectComplaint(selectedComplaint.ticket_id)}
-          />
+          <div className="space-y-6">
+            <ComplaintDetail
+              complaint={selectedComplaint}
+              userRole={userRole}
+              onBack={() => {
+                setSelectedComplaint(null);
+                setSelectedTicketId(null);
+                loadData();
+              }}
+              onRefresh={() => {
+                handleSelectComplaint(selectedComplaint.ticket_id);
+              }}
+            />
+          </div>
         ) : (
           <>
-            {/* Summary Metrics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div
-                onClick={() => {
-                  setActiveTab('queue');
-                  setQueueView('open_unassigned');
-                }}
-                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-amber transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Unassigned Queue</span>
-                  <div className="p-2 bg-noc-amber/15 text-noc-amber border border-noc-amber/30 rounded-xl">
+            {/* Summary Metrics Row */}
+            {summary && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Open Complaints</span>
+                    <span className="text-2xl font-bold font-mono text-white block mt-1">{summary.open_complaints}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-cyan flex items-center justify-center">
                     <Inbox className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.open_unassigned ?? 0}</div>
-                {summary?.by_priority && (
-                  <div className="flex gap-1.5 mt-2 text-[10px] font-mono font-bold">
-                    <span className="text-noc-rose bg-noc-rose/15 px-2 py-0.5 rounded border border-noc-rose/30">{summary.by_priority.CRITICAL || 0} CRITICAL</span>
-                    <span className="text-noc-amber bg-noc-amber/15 px-2 py-0.5 rounded border border-noc-amber/30">{summary.by_priority.HIGH || 0} HIGH</span>
-                  </div>
-                )}
-              </div>
 
-              <div
-                onClick={() => {
-                  setActiveTab('queue');
-                  setQueueView('open');
-                }}
-                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-accent transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Total Open Incidents</span>
-                  <div className="p-2 bg-noc-highlight/15 text-noc-accent border border-noc-highlight/30 rounded-xl">
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Unassigned</span>
+                    <span className="text-2xl font-bold font-mono text-noc-amber block mt-1">{summary.unassigned_complaints}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-amber flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">In Progress</span>
+                    <span className="text-2xl font-bold font-mono text-blue-400 block mt-1">{summary.assigned_complaints}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-blue-400 flex items-center justify-center">
                     <Clock className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.all_open ?? 0}</div>
-                <div className="text-[11px] text-slate-400 font-mono mt-2">Active Field Tickets</div>
-              </div>
 
-              <div
-                onClick={() => {
-                  setActiveTab('queue');
-                  setQueueView('closed');
-                }}
-                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-emerald transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Resolved Today</span>
-                  <div className="p-2 bg-noc-emerald/15 text-noc-emerald border border-noc-emerald/30 rounded-xl">
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Resolved / Closed</span>
+                    <span className="text-2xl font-bold font-mono text-noc-emerald block mt-1">{summary.closed_complaints}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-emerald flex items-center justify-center">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.closed_today ?? 0}</div>
-                <div className="text-[11px] text-noc-emerald font-mono mt-2">Confirmed by Students</div>
               </div>
+            )}
 
-              <div
-                onClick={() => setActiveTab('techs')}
-                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-purple-400 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Field Fleet Radar</span>
-                  <div className="p-2 bg-purple-500/15 text-purple-400 border border-purple-500/30 rounded-xl">
-                    <Users className="w-5 h-5" />
-                  </div>
-                </div>
-                <div className="text-xs font-mono text-purple-400 mt-3 font-semibold uppercase">Manage Fleet Availability</div>
-              </div>
-            </div>
-
-            {/* Navigation Sub-Tabs */}
-            <div className="bg-noc-panel p-1.5 rounded-xl border border-noc-border shadow-noc flex items-center gap-2 overflow-x-auto text-xs font-mono font-semibold">
+            {/* Navigation Tabs Bar */}
+            <div className="flex items-center gap-2 border-b border-noc-border pb-3 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('queue')}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'queue' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === 'queue'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
                 }`}
               >
-                <Inbox className="w-4 h-4" />
-                <span>Incident Queue</span>
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Complaint Queues</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('techs')}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'techs' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === 'techs'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
                 }`}
               >
                 <Users className="w-4 h-4" />
-                <span>Technician Fleet Status</span>
+                <span>Technician Fleet</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('reports')}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'reports' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === 'reports'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
-                <span>Analytics & Reports</span>
+                <span>Resolution Reports</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('leaderboard')}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'leaderboard' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === 'leaderboard'
+                    ? 'bg-noc-accent text-white shadow-noc'
+                    : 'bg-noc-panel border border-noc-border text-slate-400 hover:text-white'
                 }`}
               >
-                <Trophy className="w-4 h-4 text-noc-gold" />
+                <Trophy className="w-4 h-4" />
                 <span>Quality Leaderboard</span>
               </button>
             </div>
@@ -331,124 +311,135 @@ export const ManagerDashboard: React.FC = () => {
             {/* Tab 1: Queue */}
             {activeTab === 'queue' && (
               <div className="space-y-4">
-                {/* Search and Filters Bar */}
-                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono">
-                  <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
-                    {(['open', 'open_unassigned', 'closed', 'all'] as const).map((vw) => (
-                      <button
-                        key={vw}
-                        onClick={() => {
-                          setQueueView(vw);
-                          setPage(1);
-                        }}
-                        className={`px-3 py-1.5 rounded-lg capitalize font-semibold transition-colors shrink-0 cursor-pointer ${
-                          queueView === vw
-                            ? 'bg-noc-highlight text-white shadow-noc-glow'
-                            : 'bg-noc-surface text-slate-400 hover:text-white border border-noc-border'
-                        }`}
-                      >
-                        {vw.replace('_', ' ')}
-                      </button>
-                    ))}
+                {/* Secondary Filters Bar */}
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex flex-col md:flex-row items-center justify-between gap-4">
+                  {/* View Toggles */}
+                  <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                    <button
+                      onClick={() => { setQueueView('open_unassigned'); setPage(1); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                        queueView === 'open_unassigned'
+                          ? 'bg-noc-amber text-slate-950 font-bold'
+                          : 'bg-noc-surface border border-noc-border text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Pending Assign
+                    </button>
+                    <button
+                      onClick={() => { setQueueView('open'); setPage(1); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                        queueView === 'open'
+                          ? 'bg-noc-accent text-white font-bold'
+                          : 'bg-noc-surface border border-noc-border text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      All Open
+                    </button>
+                    <button
+                      onClick={() => { setQueueView('closed'); setPage(1); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                        queueView === 'closed'
+                          ? 'bg-noc-emerald text-slate-950 font-bold'
+                          : 'bg-noc-surface border border-noc-border text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Resolved / Closed
+                    </button>
+                    <button
+                      onClick={() => { setQueueView('all'); setPage(1); }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                        queueView === 'all'
+                          ? 'bg-slate-200 text-slate-900 font-bold'
+                          : 'bg-noc-surface border border-noc-border text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Complete Archive
+                    </button>
                   </div>
 
-                  <div className="flex items-center gap-2 w-full md:w-auto flex-wrap font-sans">
+                  {/* Search and Filters */}
+                  <div className="flex items-center gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-60">
+                      <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-3" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                        placeholder="Search ticket / student..."
+                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-noc-bg border border-noc-border text-slate-200 placeholder:text-slate-500 rounded-lg focus:outline-none focus:border-noc-accent"
+                      />
+                    </div>
+
                     <select
                       value={priorityFilter}
                       onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }}
-                      className="px-3 py-1.5 border border-noc-border rounded-lg bg-noc-bg text-slate-200 text-xs font-mono focus:outline-none focus:border-noc-accent"
+                      className="px-2.5 py-1.5 text-xs bg-noc-bg border border-noc-border rounded-lg text-slate-300 focus:outline-none focus:border-noc-accent"
                     >
-                      <option value="">All Priorities</option>
-                      <option value="CRITICAL">CRITICAL</option>
-                      <option value="HIGH">HIGH</option>
-                      <option value="MEDIUM">MEDIUM</option>
-                      <option value="LOW">LOW</option>
+                      <option value="" className="bg-noc-panel text-slate-300">All Priorities</option>
+                      <option value="CRITICAL" className="bg-noc-panel text-slate-300">CRITICAL</option>
+                      <option value="HIGH" className="bg-noc-panel text-slate-300">HIGH</option>
+                      <option value="MEDIUM" className="bg-noc-panel text-slate-300">MEDIUM</option>
+                      <option value="LOW" className="bg-noc-panel text-slate-300">LOW</option>
                     </select>
-
-                    <select
-                      value={problemTypeFilter}
-                      onChange={(e) => { setProblemTypeFilter(e.target.value); setPage(1); }}
-                      className="px-3 py-1.5 border border-noc-border rounded-lg bg-noc-bg text-slate-200 text-xs font-mono focus:outline-none focus:border-noc-accent"
-                    >
-                      <option value="">All Categories</option>
-                      <option value="WIFI_PROBLEM">WIFI PROBLEM</option>
-                      <option value="LAN_PROBLEM">LAN PROBLEM</option>
-                      <option value="IP_ADDRESS_ISSUE">I.P ADDRESS ISSUE</option>
-                      <option value="PROXY_ISSUE">PROXY ISSUE</option>
-                      <option value="LAN_PORT_BROKEN">LAN PORT BROKEN</option>
-                    </select>
-
-                    <div className="relative flex-1 md:w-56 font-mono">
-                      <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        placeholder="Search ticket # or student..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && loadData()}
-                        className="w-full pl-8 pr-3 py-1.5 bg-noc-bg text-slate-100 border border-noc-border rounded-lg text-xs focus:outline-none focus:border-noc-accent"
-                      />
-                    </div>
-                    <button
-                      onClick={loadData}
-                      className="p-2 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-slate-300 hover:text-white shrink-0 cursor-pointer"
-                      title="Refresh Queue"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
 
-                {/* Complaint Table */}
-                <ComplaintList complaints={complaints} onSelect={handleSelectComplaint} />
+                {/* Complaint List Table */}
+                <ComplaintList
+                  complaints={complaints}
+                  onSelect={handleSelectComplaint}
+                  showTechnician={true}
+                />
               </div>
             )}
 
-            {/* Tab 2: Technicians Availability */}
+            {/* Tab 2: Technicians */}
             {activeTab === 'techs' && (
-              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
-                <div className="flex items-center gap-2 border-b border-noc-border pb-3">
-                  <Users className="w-5 h-5 text-noc-accent" />
-                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
-                    FIELD TECHNICIAN FLEET STATUS & AVAILABILITY
-                  </h2>
-                </div>
+              <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
+                <h2 className="text-sm font-bold text-white border-b border-noc-border pb-3">
+                  Registered Service Technicians &amp; Live Availability
+                </h2>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse font-sans">
+                  <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
-                        <th className="p-3.5">Technician Name</th>
-                        <th className="p-3.5">Operator ID</th>
-                        <th className="p-3.5">Assigned Zones</th>
-                        <th className="p-3.5">Active Work Orders</th>
-                        <th className="p-3.5">Availability</th>
-                        <th className="p-3.5 text-right">Dispatch Control</th>
+                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-semibold uppercase">
+                        <th className="p-3">Technician</th>
+                        <th className="p-3">Email</th>
+                        <th className="p-3">Mobile</th>
+                        <th className="p-3">Assigned Zone</th>
+                        <th className="p-3">Status</th>
+                        <th className="p-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-noc-border/60">
+                    <tbody className="divide-y divide-noc-border">
                       {technicians.map((t) => (
-                        <tr key={t._id} className="hover:bg-noc-surface/60 transition-colors">
-                          <td className="p-3.5 font-semibold text-white">{t.full_name}</td>
-                          <td className="p-3.5 font-mono text-slate-400">{t.username}</td>
-                          <td className="p-3.5 text-slate-300">{t.zones?.join(', ') || 'All Campus Zones'}</td>
-                          <td className="p-3.5 font-mono font-bold text-noc-accent">{t.open_complaints_count} open</td>
-                          <td className="p-3.5">
-                            <span
-                              className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold border uppercase ${
-                                t.availability === 'AVAILABLE'
-                                  ? 'bg-noc-emerald/15 text-noc-emerald border-noc-emerald/30'
-                                  : 'bg-slate-800 text-slate-400 border-slate-700'
-                              }`}
-                            >
-                              {t.availability}
+                        <tr key={t.id} className="hover:bg-noc-surface/40 transition-colors">
+                          <td className="p-3 font-semibold text-white">{t.name}</td>
+                          <td className="p-3 text-slate-300 font-mono text-[11px]">{t.email}</td>
+                          <td className="p-3 text-slate-300 font-mono text-[11px]">{t.mobile}</td>
+                          <td className="p-3">
+                            <span className="flex items-center gap-1 text-slate-300">
+                              <MapPin className="w-3.5 h-3.5 text-noc-cyan" />
+                              {t.assigned_zone || 'All Campus'}
                             </span>
                           </td>
-                          <td className="p-3.5 text-right font-mono">
-                            <button
-                              onClick={() => handleToggleAvailability(t._id, t.availability)}
-                              className="px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+                          <td className="p-3">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                t.availability_status === 'AVAILABLE'
+                                  ? 'bg-noc-emerald/15 text-noc-emerald border border-noc-emerald/30'
+                                  : 'bg-noc-rose/15 text-noc-rose border border-noc-rose/30'
+                              }`}
                             >
-                              Set {t.availability === 'AVAILABLE' ? 'Unavailable' : 'Available'}
+                              {t.availability_status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <button
+                              onClick={() => handleToggleAvailability(t.id, t.availability_status)}
+                              className="px-3 py-1 bg-noc-surface hover:bg-noc-border border border-noc-border text-slate-200 rounded text-xs font-semibold transition-colors"
+                            >
+                              Toggle Availability
                             </button>
                           </td>
                         </tr>
@@ -461,60 +452,55 @@ export const ManagerDashboard: React.FC = () => {
 
             {/* Tab 3: Reports */}
             {activeTab === 'reports' && reports && (
-              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc p-6 space-y-6">
-                <div className="flex items-center justify-between border-b border-noc-border pb-4">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-noc-accent" />
-                    <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
-                      INCIDENT METRICS & RESOLUTION ANALYTICS
-                    </h2>
-                  </div>
+              <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-6">
+                <div className="flex items-center justify-between border-b border-noc-border pb-3">
+                  <h2 className="text-sm font-bold text-white">Operations &amp; Resolution Performance Metrics</h2>
                   <select
                     value={reportRange}
                     onChange={(e) => setReportRange(e.target.value)}
-                    className="p-2 border border-noc-border rounded-lg text-xs font-mono font-semibold bg-noc-bg text-slate-200 focus:outline-none focus:border-noc-accent"
+                    className="p-1.5 text-xs bg-noc-bg border border-noc-border rounded-lg text-slate-200 focus:outline-none focus:border-noc-accent"
                   >
-                    <option value="today">Today (IST)</option>
-                    <option value="weekly">Last 7 Days</option>
-                    <option value="all">All-Time Cumulative</option>
+                    <option value="today" className="bg-noc-panel text-slate-200">Today</option>
+                    <option value="weekly" className="bg-noc-panel text-slate-200">Past 7 Days</option>
+                    <option value="all" className="bg-noc-panel text-slate-200">All Time</option>
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
-                    <span className="text-slate-400 uppercase tracking-wider block">Total Received</span>
-                    <span className="text-2xl font-bold text-white mt-1 block">{reports.total_complaints}</span>
+                    <span className="text-slate-400 block text-xs">Total Complaints</span>
+                    <span className="text-2xl font-bold font-mono text-white mt-1 block">{reports.total_complaints}</span>
                   </div>
                   <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
-                    <span className="text-slate-400 uppercase tracking-wider block">Total Resolved</span>
-                    <span className="text-2xl font-bold text-noc-emerald mt-1 block">{reports.total_resolved}</span>
+                    <span className="text-noc-emerald block text-xs">Total Resolved</span>
+                    <span className="text-2xl font-bold font-mono text-noc-emerald mt-1 block">{reports.total_resolved}</span>
                   </div>
                   <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
-                    <span className="text-slate-400 uppercase tracking-wider block">Avg Resolution Time</span>
-                    <span className="text-2xl font-bold text-noc-accent mt-1 block">{reports.avg_resolution_hours} Hours</span>
+                    <span className="text-noc-cyan block text-xs">Avg Resolution Time</span>
+                    <span className="text-2xl font-bold font-mono text-noc-cyan mt-1 block">{reports.avg_resolution_hours} Hours</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                   <div>
-                    <h3 className="font-bold font-mono uppercase text-slate-300 mb-2 tracking-wider">Incidents by Category</h3>
-                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden font-mono">
+                    <h3 className="font-bold text-slate-300 mb-2">Complaints by Problem Type</h3>
+                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden">
                       {Object.entries(reports.by_problem_type || {}).map(([pt, cnt]: any) => (
-                        <li key={pt} className="p-3 flex justify-between">
+                        <li key={pt} className="p-2.5 flex justify-between">
                           <span className="text-slate-300">{pt.replace(/_/g, ' ')}</span>
-                          <span className="font-bold text-noc-accent">{cnt}</span>
+                          <span className="font-bold font-mono text-noc-cyan">{cnt}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   <div>
-                    <h3 className="font-bold font-mono uppercase text-slate-300 mb-2 tracking-wider">Incidents by Location</h3>
-                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden font-mono">
+                    <h3 className="font-bold text-slate-300 mb-2">Complaints by Location</h3>
+                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden">
                       {Object.entries(reports.by_location || {}).map(([loc, cnt]: any) => (
-                        <li key={loc} className="p-3 flex justify-between">
+                        <li key={loc} className="p-2.5 flex justify-between">
                           <span className="text-slate-300">{loc}</span>
-                          <span className="font-bold text-noc-accent">{cnt}</span>
+                          <span className="font-bold font-mono text-noc-cyan">{cnt}</span>
                         </li>
                       ))}
                     </ul>
@@ -525,43 +511,41 @@ export const ManagerDashboard: React.FC = () => {
 
             {/* Tab 4: Leaderboard */}
             {activeTab === 'leaderboard' && (
-              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
-                <div className="flex items-center gap-2 border-b border-noc-border pb-3">
-                  <Trophy className="w-5 h-5 text-noc-gold" />
-                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
-                    TECHNICIAN QUALITY & PERFORMANCE LEADERBOARD
-                  </h2>
-                </div>
+              <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
+                <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-noc-border pb-3">
+                  <Trophy className="w-4 h-4 text-noc-amber" />
+                  Technician Quality &amp; Performance Leaderboard
+                </h2>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse font-sans">
+                  <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
-                        <th className="p-3.5">Rank</th>
-                        <th className="p-3.5">Technician Name</th>
-                        <th className="p-3.5">Average Rating</th>
-                        <th className="p-3.5">Audited Ratings</th>
-                        <th className="p-3.5">Resolved Count</th>
-                        <th className="p-3.5 text-right">Computed Score</th>
+                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-semibold uppercase">
+                        <th className="p-3">Rank</th>
+                        <th className="p-3">Technician Name</th>
+                        <th className="p-3">Average Rating</th>
+                        <th className="p-3">Rating Count</th>
+                        <th className="p-3">Resolved Count</th>
+                        <th className="p-3 text-right">Computed Score</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-noc-border/60">
+                    <tbody className="divide-y divide-noc-border">
                       {leaderboard.map((lb) => (
-                        <tr key={lb.technician_id} className="hover:bg-noc-surface/60 transition-colors">
-                          <td className="p-3.5 font-mono font-bold text-noc-accent">#{lb.rank}</td>
-                          <td className="p-3.5 font-semibold text-white">{lb.name}</td>
-                          <td className="p-3.5">
+                        <tr key={lb.technician_id} className="hover:bg-noc-surface/40 transition-colors">
+                          <td className="p-3 font-mono font-bold text-slate-300">#{lb.rank}</td>
+                          <td className="p-3 font-semibold text-white">{lb.name}</td>
+                          <td className="p-3">
                             {lb.average_rating ? (
                               <div className="flex items-center gap-2">
                                 <StarRating value={Math.round(lb.average_rating)} readOnly size={16} />
-                                <span className="font-bold font-mono text-noc-gold">{lb.average_rating}</span>
+                                <span className="font-bold text-noc-amber">{lb.average_rating}</span>
                               </div>
                             ) : (
-                              <span className="text-slate-500 font-mono italic">Unrated</span>
+                              <span className="text-slate-500 italic">Unrated</span>
                             )}
                           </td>
-                          <td className="p-3.5 font-mono text-slate-300">{lb.rating_count} reviews</td>
-                          <td className="p-3.5 font-mono font-bold text-noc-emerald">{lb.resolved_count} closed</td>
-                          <td className="p-3.5 text-right font-mono font-bold text-noc-accent text-sm">{lb.score}</td>
+                          <td className="p-3 font-semibold text-slate-300">{lb.rating_count} ratings</td>
+                          <td className="p-3 font-bold text-noc-emerald">{lb.resolved_count} closed</td>
+                          <td className="p-3 text-right font-mono font-bold text-noc-cyan text-sm">{lb.score}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -572,11 +556,6 @@ export const ManagerDashboard: React.FC = () => {
           </>
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
-        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
-      </footer>
     </div>
   );
 };

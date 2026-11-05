@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchJunkComplaints, restoreJunk, clearAllJunk } from '../../api/complaints';
-import { adminLogout } from '../../api/admin';
-import { Trash2, RotateCcw, AlertTriangle, Shield, Calendar, ArrowLeft, LogOut } from 'lucide-react';
+import {
+  fetchJunkComplaints,
+  restoreJunk,
+  clearAllJunk
+} from '../../api/complaints';
+import { Trash2, RotateCcw, ArrowLeft, LogOut } from 'lucide-react';
 import logo from '../../assets/logo.jpeg';
 
 export const JunkComplaints: React.FC = () => {
-  const [junkList, setJunkList] = useState<any[]>([]);
+  const [complaints, setComplaints] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const loadJunk = () => {
     setLoading(true);
-    fetchJunkComplaints()
-      .then((res) => {
-        setJunkList(res.complaints);
+    fetchJunkComplaints(1, 50)
+      .then((res: any) => {
+        setComplaints(res.complaints);
         setTotal(res.total);
       })
       .finally(() => setLoading(false));
@@ -40,9 +43,8 @@ export const JunkComplaints: React.FC = () => {
       )
     )
       return;
-
     try {
-      await clearAllJunk(true);
+      await clearAllJunk();
       loadJunk();
     } catch (err: any) {
       alert(err.message || 'Failed to clear junk');
@@ -50,19 +52,21 @@ export const JunkComplaints: React.FC = () => {
   };
 
   const handleLogout = () => {
-    adminLogout();
+    document.cookie = 'staff_token=; path=/; max-age=0';
+    document.cookie = 'admin_token=; path=/; max-age=0';
+    localStorage.removeItem('staff_token');
+    localStorage.removeItem('staff_role');
     window.location.href = '/login';
   };
 
   return (
-    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
-      {/* Header */}
-      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col font-sans">
+      <header className="bg-noc-panel border-b border-noc-border shadow-noc sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               to="/admin"
-              className="p-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-white transition-colors"
+              className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-slate-300 hover:text-white transition-colors"
               title="Back to Admin Dashboard"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -73,84 +77,80 @@ export const JunkComplaints: React.FC = () => {
               className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
             />
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
-                  JUNK INCIDENT QUARANTINE
-                </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-amber/10 text-noc-amber border border-noc-amber/30 font-bold uppercase">
-                  FILTERED
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Quarantined Spam & Duplicate Campus Network Submissions
-              </p>
+              <h1 className="text-base font-bold text-white tracking-tight">Junk Bin Management</h1>
+              <p className="text-[11px] text-slate-400">Review and Purge Flagged Incidents</p>
             </div>
           </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-noc-rose/15 hover:bg-noc-rose/25 border border-noc-rose/40 text-noc-rose rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Logout</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleLogout}
+              className="p-2 bg-noc-surface hover:bg-noc-rose/20 text-slate-300 hover:text-noc-rose rounded-lg border border-noc-border transition-colors cursor-pointer"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
-        <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-noc-border pb-4">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+        <div className="bg-noc-panel rounded-2xl border border-noc-border shadow-noc p-6 space-y-5">
+          <div className="flex items-center justify-between border-b border-noc-border pb-4">
             <div className="flex items-center gap-2">
-              <Trash2 className="w-5 h-5 text-noc-amber" />
-              <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
-                QUARANTINED INCIDENTS ({total})
+              <Trash2 className="w-5 h-5 text-noc-rose" />
+              <h2 className="text-base font-bold text-white">
+                Junk Complaints Management ({total})
               </h2>
             </div>
             {total > 0 && (
               <button
                 onClick={handleClearAll}
-                className="px-4 py-2 bg-noc-rose hover:bg-red-600 text-white text-xs font-mono font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-noc"
+                className="px-4 py-2 bg-noc-rose hover:bg-rose-600 text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-noc"
               >
-                <AlertTriangle className="w-4 h-4" />
-                <span>PERMANENTLY PURGE QUARANTINE</span>
+                <Trash2 className="w-4 h-4" />
+                <span>Clear All Junk</span>
               </button>
             )}
           </div>
 
-          {junkList.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 font-mono text-xs">
-              NO QUARANTINED INCIDENTS IN BIN.
+          {loading ? (
+            <div className="p-12 text-center text-slate-500 text-xs">Loading junk bin...</div>
+          ) : complaints.length === 0 ? (
+            <div className="p-12 text-center text-slate-500 text-xs">
+              Junk bin is empty. No complaints marked as junk.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse font-sans">
+              <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
-                    <th className="p-3.5">Ticket ID</th>
-                    <th className="p-3.5">Student Name</th>
-                    <th className="p-3.5">Problem Type</th>
-                    <th className="p-3.5">Location</th>
-                    <th className="p-3.5">Original Status</th>
-                    <th className="p-3.5 text-right">Action</th>
+                  <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-semibold uppercase">
+                    <th className="p-3">Ticket ID</th>
+                    <th className="p-3">Student Name</th>
+                    <th className="p-3">Problem Type</th>
+                    <th className="p-3">Location</th>
+                    <th className="p-3">Reason</th>
+                    <th className="p-3">Date Flagged</th>
+                    <th className="p-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-noc-border/60">
-                  {junkList.map((c) => (
-                    <tr key={c.ticket_id} className="hover:bg-noc-surface/60 transition-colors">
-                      <td className="p-3.5 font-mono font-bold text-noc-amber">#{c.ticket_id}</td>
-                      <td className="p-3.5 font-semibold text-white">{c.name}</td>
-                      <td className="p-3.5 text-slate-300 font-mono text-[11px]">
-                        {c.problem_type.replace(/_/g, ' ')}
+                <tbody className="divide-y divide-noc-border">
+                  {complaints.map((c) => (
+                    <tr key={c.ticket_id} className="hover:bg-noc-surface/40 transition-colors">
+                      <td className="p-3 font-mono font-bold text-noc-cyan">{c.ticket_id}</td>
+                      <td className="p-3 font-semibold text-white">{c.student_name}</td>
+                      <td className="p-3 text-slate-300">{c.problem_type?.replace(/_/g, ' ')}</td>
+                      <td className="p-3 text-slate-300">{c.location}</td>
+                      <td className="p-3 text-noc-amber italic text-[11px]">{c.junk_reason || 'Marked by manager'}</td>
+                      <td className="p-3 font-mono text-[11px] text-slate-400">
+                        {new Date(c.junk_at || c.created_at).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
                       </td>
-                      <td className="p-3.5 text-slate-400">{c.location}</td>
-                      <td className="p-3.5 font-mono text-noc-cyan">{c.previous_status || 'CLASSIFIED'}</td>
-                      <td className="p-3.5 text-right font-mono">
+                      <td className="p-3 text-right">
                         <button
                           onClick={() => handleRestore(c.ticket_id)}
-                          className="px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-noc-accent hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 ml-auto cursor-pointer transition-colors"
+                          className="px-3 py-1 bg-noc-emerald/15 hover:bg-noc-emerald/25 text-noc-emerald border border-noc-emerald/30 rounded text-xs font-semibold transition-colors flex items-center gap-1 ml-auto"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
-                          <span>Restore Ticket</span>
+                          <span>Restore to Open</span>
                         </button>
                       </td>
                     </tr>
@@ -161,11 +161,6 @@ export const JunkComplaints: React.FC = () => {
           )}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
-        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
-      </footer>
     </div>
   );
 };
