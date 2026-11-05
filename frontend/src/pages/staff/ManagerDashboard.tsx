@@ -1,6 +1,3 @@
-// MODULE: Complaint Management (Part 2) - this file belongs to the code for this module.
-// Manager Dashboard page providing complaint queues, assignment, technician status, reports, and leaderboard.
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchCurrentStaff } from '../../api/auth';
@@ -31,10 +28,11 @@ import {
   Shield,
   MapPin,
   AlertTriangle,
-  ArrowLeft
+  ArrowLeft,
+  Activity
 } from 'lucide-react';
 
-import logo from '../../assets/logo.jpeg'
+import logo from '../../assets/logo.jpeg';
 
 export const ManagerDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'queue' | 'techs' | 'reports' | 'leaderboard'>('queue');
@@ -149,15 +147,15 @@ export const ManagerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      {/* Top Header */}
-      <header className="bg-mnnit-blue text-white shadow-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
+      {/* Top NOC Header */}
+      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {userRole === 'ADMIN' && (
               <Link
                 to="/admin"
-                className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                className="p-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-white transition-colors"
                 title="Back to Admin Dashboard"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -166,24 +164,33 @@ export const ManagerDashboard: React.FC = () => {
             <img
               src={logo}
               alt="MNNIT Allahabad Logo"
-              className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-white/20 shadow-sm"
+              className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
             />
             <div>
-              <h1 className="text-base font-bold">Manager Operations Dashboard</h1>
-              <p className="text-[11px] text-slate-200">Network Complaint Lifecycle & Dispatch</p>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
+                  INCIDENT DISPATCH & OPERATIONS // MANAGER
+                </h1>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-highlight/10 text-noc-accent border border-noc-highlight/30 font-bold uppercase">
+                  NOC QUEUE
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-mono">
+                Real-Time Triage, Field Technician Routing & SLA Management
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
               to="/admin/network-assets"
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold border border-white/20 transition-colors"
+              className="hidden sm:inline-flex px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover rounded-lg text-xs font-mono text-slate-200 border border-noc-border transition-colors"
             >
               Network Assets {userRole === 'ADMIN' ? '' : '(Read-Only)'}
             </Link>
             <button
               onClick={handleLogout}
-              className="p-2 bg-white/10 hover:bg-red-500/80 rounded-xl text-white transition-colors"
+              className="p-2 bg-noc-surface hover:bg-noc-rose/20 text-slate-300 hover:text-noc-rose rounded-lg border border-noc-border transition-colors cursor-pointer"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
@@ -213,19 +220,19 @@ export const ManagerDashboard: React.FC = () => {
                   setActiveTab('queue');
                   setQueueView('open_unassigned');
                 }}
-                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition-colors"
+                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-amber transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500">Unassigned Queue</span>
-                  <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Unassigned Queue</span>
+                  <div className="p-2 bg-noc-amber/15 text-noc-amber border border-noc-amber/30 rounded-xl">
                     <Inbox className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-slate-900 mt-2">{summary?.open_unassigned ?? 0}</div>
+                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.open_unassigned ?? 0}</div>
                 {summary?.by_priority && (
-                  <div className="flex gap-1.5 mt-2 text-[10px] font-bold">
-                    <span className="text-red-700 bg-red-50 px-1.5 py-0.5 rounded">{summary.by_priority.CRITICAL || 0} CRITICAL</span>
-                    <span className="text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">{summary.by_priority.HIGH || 0} HIGH</span>
+                  <div className="flex gap-1.5 mt-2 text-[10px] font-mono font-bold">
+                    <span className="text-noc-rose bg-noc-rose/15 px-2 py-0.5 rounded border border-noc-rose/30">{summary.by_priority.CRITICAL || 0} CRITICAL</span>
+                    <span className="text-noc-amber bg-noc-amber/15 px-2 py-0.5 rounded border border-noc-amber/30">{summary.by_priority.HIGH || 0} HIGH</span>
                   </div>
                 )}
               </div>
@@ -235,15 +242,16 @@ export const ManagerDashboard: React.FC = () => {
                   setActiveTab('queue');
                   setQueueView('open');
                 }}
-                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition-colors"
+                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-accent transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500">Total Open Complaints</span>
-                  <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Total Open Incidents</span>
+                  <div className="p-2 bg-noc-highlight/15 text-noc-accent border border-noc-highlight/30 rounded-xl">
                     <Clock className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-slate-900 mt-2">{summary?.all_open ?? 0}</div>
+                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.all_open ?? 0}</div>
+                <div className="text-[11px] text-slate-400 font-mono mt-2">Active Field Tickets</div>
               </div>
 
               <div
@@ -251,57 +259,58 @@ export const ManagerDashboard: React.FC = () => {
                   setActiveTab('queue');
                   setQueueView('closed');
                 }}
-                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition-colors"
+                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-noc-emerald transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500">Closed Today</span>
-                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Resolved Today</span>
+                  <div className="p-2 bg-noc-emerald/15 text-noc-emerald border border-noc-emerald/30 rounded-xl">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-slate-900 mt-2">{summary?.closed_today ?? 0}</div>
+                <div className="text-2xl font-bold font-mono text-white mt-2">{summary?.closed_today ?? 0}</div>
+                <div className="text-[11px] text-noc-emerald font-mono mt-2">Confirmed by Students</div>
               </div>
 
               <div
                 onClick={() => setActiveTab('techs')}
-                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition-colors"
+                className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc cursor-pointer hover:border-purple-400 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500">Technician Fleet</span>
-                  <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                  <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Field Fleet Radar</span>
+                  <div className="p-2 bg-purple-500/15 text-purple-400 border border-purple-500/30 rounded-xl">
                     <Users className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="text-xs font-semibold text-purple-700 mt-2">Manage Status & Availability</div>
+                <div className="text-xs font-mono text-purple-400 mt-3 font-semibold uppercase">Manage Fleet Availability</div>
               </div>
             </div>
 
             {/* Navigation Sub-Tabs */}
-            <div className="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 overflow-x-auto text-xs font-semibold">
+            <div className="bg-noc-panel p-1.5 rounded-xl border border-noc-border shadow-noc flex items-center gap-2 overflow-x-auto text-xs font-mono font-semibold">
               <button
                 onClick={() => setActiveTab('queue')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'queue' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'queue' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
                 <Inbox className="w-4 h-4" />
-                <span>Complaints Queue</span>
+                <span>Incident Queue</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('techs')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'techs' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'techs' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
                 <Users className="w-4 h-4" />
-                <span>Technician Availability</span>
+                <span>Technician Fleet Status</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('reports')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'reports' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'reports' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
                 <BarChart3 className="w-4 h-4" />
@@ -310,12 +319,12 @@ export const ManagerDashboard: React.FC = () => {
 
               <button
                 onClick={() => setActiveTab('leaderboard')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'leaderboard' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'leaderboard' ? 'bg-noc-highlight text-white shadow-noc-glow' : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
-                <Trophy className="w-4 h-4 text-mnnit-gold" />
-                <span>Technician Leaderboard</span>
+                <Trophy className="w-4 h-4 text-noc-gold" />
+                <span>Quality Leaderboard</span>
               </button>
             </div>
 
@@ -323,7 +332,7 @@ export const ManagerDashboard: React.FC = () => {
             {activeTab === 'queue' && (
               <div className="space-y-4">
                 {/* Search and Filters Bar */}
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+                <div className="bg-noc-panel p-4 rounded-xl border border-noc-border shadow-noc flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono">
                   <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
                     {(['open', 'open_unassigned', 'closed', 'all'] as const).map((vw) => (
                       <button
@@ -332,8 +341,10 @@ export const ManagerDashboard: React.FC = () => {
                           setQueueView(vw);
                           setPage(1);
                         }}
-                        className={`px-3 py-1.5 rounded-xl capitalize font-semibold transition-colors shrink-0 ${
-                          queueView === vw ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        className={`px-3 py-1.5 rounded-lg capitalize font-semibold transition-colors shrink-0 cursor-pointer ${
+                          queueView === vw
+                            ? 'bg-noc-highlight text-white shadow-noc-glow'
+                            : 'bg-noc-surface text-slate-400 hover:text-white border border-noc-border'
                         }`}
                       >
                         {vw.replace('_', ' ')}
@@ -341,11 +352,11 @@ export const ManagerDashboard: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+                  <div className="flex items-center gap-2 w-full md:w-auto flex-wrap font-sans">
                     <select
                       value={priorityFilter}
                       onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }}
-                      className="px-2.5 py-1.5 border border-slate-300 rounded-xl bg-white text-xs font-semibold"
+                      className="px-3 py-1.5 border border-noc-border rounded-lg bg-noc-bg text-slate-200 text-xs font-mono focus:outline-none focus:border-noc-accent"
                     >
                       <option value="">All Priorities</option>
                       <option value="CRITICAL">CRITICAL</option>
@@ -357,7 +368,7 @@ export const ManagerDashboard: React.FC = () => {
                     <select
                       value={problemTypeFilter}
                       onChange={(e) => { setProblemTypeFilter(e.target.value); setPage(1); }}
-                      className="px-2.5 py-1.5 border border-slate-300 rounded-xl bg-white text-xs font-semibold"
+                      className="px-3 py-1.5 border border-noc-border rounded-lg bg-noc-bg text-slate-200 text-xs font-mono focus:outline-none focus:border-noc-accent"
                     >
                       <option value="">All Categories</option>
                       <option value="WIFI_PROBLEM">WIFI PROBLEM</option>
@@ -367,20 +378,21 @@ export const ManagerDashboard: React.FC = () => {
                       <option value="LAN_PORT_BROKEN">LAN PORT BROKEN</option>
                     </select>
 
-                    <div className="relative flex-1 md:w-56">
-                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                    <div className="relative flex-1 md:w-56 font-mono">
+                      <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
                       <input
                         type="text"
                         placeholder="Search ticket # or student..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && loadData()}
-                        className="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full pl-8 pr-3 py-1.5 bg-noc-bg text-slate-100 border border-noc-border rounded-lg text-xs focus:outline-none focus:border-noc-accent"
                       />
                     </div>
                     <button
                       onClick={loadData}
-                      className="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-600 shrink-0"
+                      className="p-2 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-slate-300 hover:text-white shrink-0 cursor-pointer"
+                      title="Refresh Queue"
                     >
                       <RefreshCw className="w-4 h-4" />
                     </button>
@@ -394,45 +406,47 @@ export const ManagerDashboard: React.FC = () => {
 
             {/* Tab 2: Technicians Availability */}
             {activeTab === 'techs' && (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4">
-                <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <Users className="w-4 h-4 text-blue-600" />
-                  Technician Fleet Status & Dispatch Availability
-                </h2>
+              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
+                <div className="flex items-center gap-2 border-b border-noc-border pb-3">
+                  <Users className="w-5 h-5 text-noc-accent" />
+                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
+                    FIELD TECHNICIAN FLEET STATUS & AVAILABILITY
+                  </h2>
+                </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-xs border-collapse font-sans">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase">
-                        <th className="p-3">Technician Name</th>
-                        <th className="p-3">Username</th>
-                        <th className="p-3">Assigned Zones</th>
-                        <th className="p-3">Open Tickets</th>
-                        <th className="p-3">Availability</th>
-                        <th className="p-3 text-right">Toggle Status</th>
+                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
+                        <th className="p-3.5">Technician Name</th>
+                        <th className="p-3.5">Operator ID</th>
+                        <th className="p-3.5">Assigned Zones</th>
+                        <th className="p-3.5">Active Work Orders</th>
+                        <th className="p-3.5">Availability</th>
+                        <th className="p-3.5 text-right">Dispatch Control</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-noc-border/60">
                       {technicians.map((t) => (
-                        <tr key={t._id} className="hover:bg-slate-50">
-                          <td className="p-3 font-semibold text-slate-900">{t.full_name}</td>
-                          <td className="p-3 font-mono text-slate-500">{t.username}</td>
-                          <td className="p-3 text-slate-600">{t.zones?.join(', ') || 'All Campus Zones'}</td>
-                          <td className="p-3 font-bold text-blue-700">{t.open_complaints_count} open</td>
-                          <td className="p-3">
+                        <tr key={t._id} className="hover:bg-noc-surface/60 transition-colors">
+                          <td className="p-3.5 font-semibold text-white">{t.full_name}</td>
+                          <td className="p-3.5 font-mono text-slate-400">{t.username}</td>
+                          <td className="p-3.5 text-slate-300">{t.zones?.join(', ') || 'All Campus Zones'}</td>
+                          <td className="p-3.5 font-mono font-bold text-noc-accent">{t.open_complaints_count} open</td>
+                          <td className="p-3.5">
                             <span
-                              className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                              className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold border uppercase ${
                                 t.availability === 'AVAILABLE'
-                                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                                  : 'bg-slate-100 text-slate-600 border-slate-300'
+                                  ? 'bg-noc-emerald/15 text-noc-emerald border-noc-emerald/30'
+                                  : 'bg-slate-800 text-slate-400 border-slate-700'
                               }`}
                             >
                               {t.availability}
                             </span>
                           </td>
-                          <td className="p-3 text-right">
+                          <td className="p-3.5 text-right font-mono">
                             <button
                               onClick={() => handleToggleAvailability(t._id, t.availability)}
-                              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs"
+                              className="px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
                             >
                               Set {t.availability === 'AVAILABLE' ? 'Unavailable' : 'Available'}
                             </button>
@@ -447,16 +461,18 @@ export const ManagerDashboard: React.FC = () => {
 
             {/* Tab 3: Reports */}
             {activeTab === 'reports' && reports && (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-blue-600" />
-                    Analytics & Performance Report
-                  </h2>
+              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc p-6 space-y-6">
+                <div className="flex items-center justify-between border-b border-noc-border pb-4">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-noc-accent" />
+                    <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
+                      INCIDENT METRICS & RESOLUTION ANALYTICS
+                    </h2>
+                  </div>
                   <select
                     value={reportRange}
                     onChange={(e) => setReportRange(e.target.value)}
-                    className="p-2 border border-slate-300 rounded-xl text-xs font-semibold bg-white"
+                    className="p-2 border border-noc-border rounded-lg text-xs font-mono font-semibold bg-noc-bg text-slate-200 focus:outline-none focus:border-noc-accent"
                   >
                     <option value="today">Today (IST)</option>
                     <option value="weekly">Last 7 Days</option>
@@ -464,41 +480,41 @@ export const ManagerDashboard: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <span className="text-slate-500 block">Total Received</span>
-                    <span className="text-2xl font-bold text-slate-900 mt-1 block">{reports.total_complaints}</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                  <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                    <span className="text-slate-400 uppercase tracking-wider block">Total Received</span>
+                    <span className="text-2xl font-bold text-white mt-1 block">{reports.total_complaints}</span>
                   </div>
-                  <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
-                    <span className="text-emerald-700 block">Total Resolved</span>
-                    <span className="text-2xl font-bold text-emerald-900 mt-1 block">{reports.total_resolved}</span>
+                  <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                    <span className="text-slate-400 uppercase tracking-wider block">Total Resolved</span>
+                    <span className="text-2xl font-bold text-noc-emerald mt-1 block">{reports.total_resolved}</span>
                   </div>
-                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                    <span className="text-blue-700 block">Avg Resolution Time</span>
-                    <span className="text-2xl font-bold text-blue-900 mt-1 block">{reports.avg_resolution_hours} Hours</span>
+                  <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                    <span className="text-slate-400 uppercase tracking-wider block">Avg Resolution Time</span>
+                    <span className="text-2xl font-bold text-noc-accent mt-1 block">{reports.avg_resolution_hours} Hours</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                   <div>
-                    <h3 className="font-bold text-slate-700 mb-2">Complaints by Problem Type</h3>
-                    <ul className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50/50 overflow-hidden">
+                    <h3 className="font-bold font-mono uppercase text-slate-300 mb-2 tracking-wider">Incidents by Category</h3>
+                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden font-mono">
                       {Object.entries(reports.by_problem_type || {}).map(([pt, cnt]: any) => (
-                        <li key={pt} className="p-2.5 flex justify-between">
-                          <span>{pt.replace(/_/g, ' ')}</span>
-                          <span className="font-bold text-slate-800">{cnt}</span>
+                        <li key={pt} className="p-3 flex justify-between">
+                          <span className="text-slate-300">{pt.replace(/_/g, ' ')}</span>
+                          <span className="font-bold text-noc-accent">{cnt}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-slate-700 mb-2">Complaints by Location</h3>
-                    <ul className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50/50 overflow-hidden">
+                    <h3 className="font-bold font-mono uppercase text-slate-300 mb-2 tracking-wider">Incidents by Location</h3>
+                    <ul className="divide-y divide-noc-border border border-noc-border rounded-xl bg-noc-bg overflow-hidden font-mono">
                       {Object.entries(reports.by_location || {}).map(([loc, cnt]: any) => (
-                        <li key={loc} className="p-2.5 flex justify-between">
-                          <span>{loc}</span>
-                          <span className="font-bold text-slate-800">{cnt}</span>
+                        <li key={loc} className="p-3 flex justify-between">
+                          <span className="text-slate-300">{loc}</span>
+                          <span className="font-bold text-noc-accent">{cnt}</span>
                         </li>
                       ))}
                     </ul>
@@ -509,41 +525,43 @@ export const ManagerDashboard: React.FC = () => {
 
             {/* Tab 4: Leaderboard */}
             {activeTab === 'leaderboard' && (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4">
-                <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <Trophy className="w-4 h-4 text-mnnit-gold" />
-                  Technician Quality & Performance Leaderboard
-                </h2>
+              <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden p-6 space-y-4">
+                <div className="flex items-center gap-2 border-b border-noc-border pb-3">
+                  <Trophy className="w-5 h-5 text-noc-gold" />
+                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
+                    TECHNICIAN QUALITY & PERFORMANCE LEADERBOARD
+                  </h2>
+                </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-xs border-collapse font-sans">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase">
-                        <th className="p-3">Rank</th>
-                        <th className="p-3">Technician Name</th>
-                        <th className="p-3">Average Rating</th>
-                        <th className="p-3">Rating Count</th>
-                        <th className="p-3">Resolved Count</th>
-                        <th className="p-3 text-right">Computed Score</th>
+                      <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
+                        <th className="p-3.5">Rank</th>
+                        <th className="p-3.5">Technician Name</th>
+                        <th className="p-3.5">Average Rating</th>
+                        <th className="p-3.5">Audited Ratings</th>
+                        <th className="p-3.5">Resolved Count</th>
+                        <th className="p-3.5 text-right">Computed Score</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-noc-border/60">
                       {leaderboard.map((lb) => (
-                        <tr key={lb.technician_id} className="hover:bg-slate-50">
-                          <td className="p-3 font-mono font-bold text-slate-700">#{lb.rank}</td>
-                          <td className="p-3 font-semibold text-slate-900">{lb.name}</td>
-                          <td className="p-3">
+                        <tr key={lb.technician_id} className="hover:bg-noc-surface/60 transition-colors">
+                          <td className="p-3.5 font-mono font-bold text-noc-accent">#{lb.rank}</td>
+                          <td className="p-3.5 font-semibold text-white">{lb.name}</td>
+                          <td className="p-3.5">
                             {lb.average_rating ? (
                               <div className="flex items-center gap-2">
                                 <StarRating value={Math.round(lb.average_rating)} readOnly size={16} />
-                                <span className="font-bold text-amber-700">{lb.average_rating}</span>
+                                <span className="font-bold font-mono text-noc-gold">{lb.average_rating}</span>
                               </div>
                             ) : (
-                              <span className="text-slate-400 italic">Unrated</span>
+                              <span className="text-slate-500 font-mono italic">Unrated</span>
                             )}
                           </td>
-                          <td className="p-3 font-semibold text-slate-700">{lb.rating_count} ratings</td>
-                          <td className="p-3 font-bold text-emerald-700">{lb.resolved_count} closed</td>
-                          <td className="p-3 text-right font-mono font-bold text-blue-700 text-sm">{lb.score}</td>
+                          <td className="p-3.5 font-mono text-slate-300">{lb.rating_count} reviews</td>
+                          <td className="p-3.5 font-mono font-bold text-noc-emerald">{lb.resolved_count} closed</td>
+                          <td className="p-3.5 text-right font-mono font-bold text-noc-accent text-sm">{lb.score}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -554,6 +572,11 @@ export const ManagerDashboard: React.FC = () => {
           </>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
+        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
+      </footer>
     </div>
   );
 };

@@ -14,7 +14,7 @@ export const NetworkAssetsNav: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white border-b border-slate-200 shadow-sm">
+    <div className="bg-noc-panel border-b border-noc-border shadow-sm">
       <div className="max-w-7xl mx-auto px-6 flex items-center gap-2 overflow-x-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -24,14 +24,14 @@ export const NetworkAssetsNav: React.FC = () => {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap ${
+                `flex items-center gap-2 px-4 py-3 text-xs font-mono font-medium border-b-2 transition-colors whitespace-nowrap ${
                   isActive
-                    ? 'border-blue-600 text-blue-600 bg-blue-50/50'
-                    : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'border-noc-accent text-noc-cyan bg-noc-surface/60'
+                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-noc-surface/30'
                 }`
               }
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5" />
               <span>{item.label}</span>
             </NavLink>
           );

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useChat } from '../../hooks/useChat';
 import { useResizablePanel } from '../../hooks/useResizablePanel';
@@ -14,6 +13,8 @@ import {
   AlertCircle,
   Settings2,
   Download,
+  Terminal,
+  Activity
 } from 'lucide-react';
 import { ProblemType } from '../../types';
 
@@ -30,9 +31,10 @@ interface ChatPanelProps {
 type OperatingSystem = 'linux' | 'windows';
 
 const SUGGESTION_CHIPS = [
-  'Wi-Fi keeps disconnecting',
-  "Can't get an IP address",
-  'Internet is very slow',
+  'Wi-Fi keeps dropping in hostel room',
+  'Cannot obtain DHCP IPv4 address',
+  'MNNIT proxy 172.31.100.27 not reachable',
+  'Physical LAN RJ45 port loose / broken',
 ];
 
 export const ChatPanel: React.FC<ChatPanelProps> = ({
@@ -46,7 +48,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     messageCount,
     detectedCategory,
     isLoading,
-    error,
     limitReached,
     sendMessage,
     getSummary,
@@ -81,14 +82,12 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       if (!response.ok) {
         let detail = `Download failed (${response.status})`;
-
         try {
           const body = await response.json();
           if (body.detail) detail = body.detail;
         } catch {
-          // Keep the default error message if the response is not JSON.
+          // Keep default
         }
-
         throw new Error(detail);
       }
 
@@ -109,17 +108,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Unknown download error';
-
-      alert(`Could not download the configuration script: ${message}`);
+      alert(`Could not download configuration script: ${message}`);
     } finally {
       setIsDownloadingConfig(false);
     }
   };
 
-  // Prompts confirmation if active chat has user messages before creating a fresh chat
   const handleStartNewChat = () => {
     if (userMessagesCount > 0) {
-      const confirmed = window.confirm('Start a new chat? This conversation will be closed.');
+      const confirmed = window.confirm('Reset diagnostic session? Active telemetry trace will be cleared.');
       if (!confirmed) return;
     }
     startNewChat();
@@ -134,7 +131,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       alert(
         err instanceof Error
           ? err.message
-          : 'Failed to generate AI summary'
+          : 'Failed to generate AI diagnostic summary'
       );
     } finally {
       setIsSummarizing(false);
@@ -144,7 +141,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div
       style={{ width: `${width}px` }}
-      className="fixed top-0 right-0 h-full bg-slate-50 shadow-2xl z-50 flex flex-col border-l border-slate-200 transition-none w-full md:max-w-[80vw] min-w-[320px]"
+      className="fixed top-0 right-0 h-full bg-noc-bg/95 backdrop-blur-xl shadow-2xl z-50 flex flex-col border-l border-noc-border transition-none w-full md:max-w-[80vw] min-w-[320px]"
     >
       {/* Resizable handle for desktop */}
       <ResizeHandle
@@ -153,63 +150,65 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         isResizing={isResizing}
       />
 
-      {/* Header */}
-      <div className="bg-mnnit-blue text-white p-3.5 flex items-center justify-between shrink-0 shadow-md">
+      {/* NOC Header */}
+      <div className="bg-noc-panel border-b border-noc-border px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-mnnit-gold" />
+          <div className="w-8 h-8 rounded bg-noc-surface border border-noc-border flex items-center justify-center">
+            <Terminal className="w-4 h-4 text-noc-cyan" />
           </div>
 
           <div>
-            <h2 className="font-semibold text-sm">Network Assistant</h2>
-            <p className="text-[11px] text-slate-300">
-              {messageCount} / 10 messages
+            <div className="flex items-center gap-2">
+              <h2 className="font-mono text-xs font-semibold text-slate-100 tracking-wider">
+                NOC // AI DIAGNOSER
+              </h2>
+              <span className="w-2 h-2 rounded-full bg-noc-emerald radar-live" />
+            </div>
+            <p className="text-[10px] font-mono text-slate-400">
+              TRACE_LOAD: {messageCount}/10 MSG
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* Always-visible New Chat Button in header */}
           <button
             onClick={handleStartNewChat}
-            className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-medium text-white flex items-center gap-1 transition-colors"
-            title="Start a new chat"
+            className="px-2 py-1 bg-noc-surface hover:bg-noc-border rounded text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 border border-noc-border transition-colors"
+            title="Reset telemetry trace"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">New Chat</span>
+            <RotateCcw className="w-3 h-3 text-noc-cyan" />
+            <span className="hidden sm:inline">Reset</span>
           </button>
 
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-300 hover:text-white transition-colors"
-            title="Minimize chat"
+            className="p-1 hover:bg-noc-surface rounded text-slate-400 hover:text-white transition-colors"
+            title="Minimize"
           >
             <Minus className="w-4 h-4" />
           </button>
 
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-300 hover:text-white transition-colors"
-            title="Close chat"
+            className="p-1 hover:bg-noc-surface rounded text-slate-400 hover:text-white transition-colors"
+            title="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Privacy Notice Banner */}
-      <div className="bg-blue-50 border-b border-blue-100 px-3.5 py-1.5 text-[11px] text-blue-800 flex items-center gap-1.5">
-        <AlertCircle className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-        <span>
-          Chats may be reviewed by the network team to improve support.
-        </span>
+      {/* Advisory strip */}
+      <div className="bg-noc-surface/80 border-b border-noc-border px-3.5 py-1.5 text-[11px] font-mono text-slate-400 flex items-center gap-2">
+        <Activity className="w-3.5 h-3.5 text-noc-cyan shrink-0" />
+        <span>Traces routed through MNNIT automated triage system.</span>
       </div>
 
-      {/* Suggested queries and network configuration */}
+      {/* Suggested queries & Quick script download */}
       {messages.length <= 1 && (
-        <div className="p-3 bg-white border-b border-slate-200">
-          <p className="text-xs text-slate-500 mb-2 font-medium">
-            Suggested queries:
+        <div className="p-3 bg-noc-panel/60 border-b border-noc-border">
+          <p className="text-[11px] font-mono text-slate-400 mb-2">
+            PRE-FILTER TEMPLATES:
           </p>
 
           <div className="flex flex-wrap gap-1.5">
@@ -217,7 +216,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               <button
                 key={idx}
                 onClick={() => sendMessage(chip)}
-                className="text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200 transition-colors"
+                className="text-[11px] font-mono bg-noc-surface hover:border-noc-accent text-slate-300 hover:text-slate-100 px-2.5 py-1 rounded border border-noc-border transition-colors text-left"
               >
                 {chip}
               </button>
@@ -225,99 +224,64 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
             <button
               onClick={() => setShowNetworkConfig(!showNetworkConfig)}
-              className="inline-flex items-center gap-1.5 text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200 transition-colors"
+              className="inline-flex items-center gap-1.5 text-[11px] font-mono bg-noc-accent/20 hover:bg-noc-accent/30 text-noc-cyan px-2.5 py-1 rounded border border-noc-accent/40 transition-colors"
               aria-expanded={showNetworkConfig}
             >
-              <Settings2 className="w-4 h-4" />
-              Configure Proxy &amp; IPv4
+              <Settings2 className="w-3.5 h-3.5" />
+              Configure Proxy / IP Script
             </button>
           </div>
 
           {showNetworkConfig && (
-            <div className="mt-3 p-3 border border-slate-200 rounded-xl bg-slate-50 space-y-3">
-              <p className="text-sm font-semibold text-slate-800">
-                Hostel network configuration
+            <div className="mt-3 p-3 border border-noc-border rounded-lg bg-noc-bg space-y-2.5">
+              <p className="text-xs font-mono font-semibold text-slate-200">
+                HOSTEL NETWORK RECONFIGURATION UTILITY
               </p>
 
-              <div>
-                <p className="text-xs text-slate-600 mb-2">
-                  Which operating system are you using?
-                </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedOS('windows')}
+                  className={`rounded border px-2.5 py-1.5 text-xs font-mono transition-colors ${
+                    selectedOS === 'windows'
+                      ? 'border-noc-accent bg-noc-accent/20 text-noc-cyan'
+                      : 'border-noc-border bg-noc-panel text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  Windows (.ps1)
+                </button>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedOS('windows')}
-                    aria-pressed={selectedOS === 'windows'}
-                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-                      selectedOS === 'windows'
-                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
-                    }`}
-                  >
-                    Windows
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedOS('linux')}
-                    aria-pressed={selectedOS === 'linux'}
-                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-                      selectedOS === 'linux'
-                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
-                    }`}
-                  >
-                    Linux / Ubuntu
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedOS('linux')}
+                  className={`rounded border px-2.5 py-1.5 text-xs font-mono transition-colors ${
+                    selectedOS === 'linux'
+                      ? 'border-noc-accent bg-noc-accent/20 text-noc-cyan'
+                      : 'border-noc-border bg-noc-panel text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  Linux / Ubuntu (.py)
+                </button>
               </div>
-
-              <p className="text-xs text-slate-600">
-                {selectedOS === 'windows'
-                  ? 'Download the PowerShell script for Windows. Open PowerShell in the download folder to run it.'
-                  : 'Download the Python script for Linux/Ubuntu. Run it from your terminal.'}
-              </p>
 
               <button
                 onClick={handleDownloadNetworkConfig}
                 disabled={isDownloadingConfig}
-                className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-medium rounded-lg flex items-center justify-center gap-2"
+                className="w-full py-1.5 px-3 bg-noc-accent hover:bg-blue-600 disabled:opacity-50 text-white text-xs font-mono font-semibold rounded flex items-center justify-center gap-2 shadow-noc-glow"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-3.5 h-3.5" />
                 {isDownloadingConfig
-                  ? 'Downloading...'
+                  ? 'FETCHING BUNDLE...'
                   : selectedOS === 'windows'
-                    ? 'Download Windows Script (.ps1)'
-                    : 'Download Linux Script (.py)'}
+                    ? 'DOWNLOAD WINDOWS SCRIPT'
+                    : 'DOWNLOAD LINUX SCRIPT'}
               </button>
 
-              <p className="text-xs text-slate-600">
+              <code className="block text-[11px] font-mono bg-noc-panel border border-noc-border text-noc-emerald rounded p-2 break-all whitespace-pre-wrap">
                 {selectedOS === 'windows'
-                  ? 'After downloading, open PowerShell in your Downloads folder and run:'
-                  : 'After downloading, open a terminal and run:'}
-              </p>
-
-              <code className="block text-xs bg-slate-900 text-slate-100 rounded-lg p-2 break-all whitespace-pre-wrap">
-                {selectedOS === 'windows'
-                  ? 'cd "$HOME\\Downloads"\n.\\configure_hostel_network.ps1'
+                  ? 'powershell -ExecutionPolicy Bypass -File .\\configure_hostel_network.ps1'
                   : 'python3 ~/Downloads/configure_hostel_network.py'}
               </code>
-
-              {selectedOS === 'windows' && (
-                <p className="text-xs text-slate-600">
-                  If Windows blocks script execution, do not change system-wide
-                  execution policy. Ask your administrator for the approved way
-                  to run the script.
-                </p>
-              )}
-
-              <p className="text-xs text-amber-800">
-                Warning: applying a static IP may disconnect your network.
-                Confirm the room mapping and settings with the network
-                administrator first. The current Windows script is preview-only;
-                it does not apply network changes.
-              </p>
             </div>
           )}
         </div>
@@ -332,40 +296,39 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
       {/* Limit Reached Banner */}
       {limitReached && (
-        <div className="bg-amber-50 border-y border-amber-200 p-3 text-xs text-amber-800 flex flex-col gap-2">
+        <div className="bg-noc-amber/10 border-y border-noc-amber/30 p-3 text-xs font-mono text-noc-amber flex flex-col gap-2">
           <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>
-              You've reached the 10-message limit. Click 'Log request using AI'
-              to submit your complaint, or start a new chat.
+              Diagnostic session reached 10 traces. Auto-populate complaint ticket or reset session.
             </span>
           </div>
 
           <button
             onClick={handleStartNewChat}
-            className="self-start text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition-colors"
+            className="self-start text-[11px] font-mono bg-noc-amber hover:bg-amber-600 text-slate-900 font-bold px-3 py-1 rounded flex items-center gap-1.5 transition-colors"
           >
-            <RotateCcw className="w-4 h-4" />
-            <span>Start New Chat</span>
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>START NEW SESSION</span>
           </button>
         </div>
       )}
 
       {/* Action area & "Log request using AI" button */}
-      <div className="shrink-0 bg-white border-t border-slate-200 p-2.5 space-y-2">
+      <div className="shrink-0 bg-noc-panel border-t border-noc-border p-2.5 space-y-2">
         {userMessagesCount >= 1 && (
           <button
             onClick={handleLogRequestWithAI}
             disabled={isSummarizing}
-            className="w-full py-2 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-xs rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+            className="w-full py-2 px-3 bg-gradient-to-r from-noc-accent to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-mono font-medium text-xs rounded-lg shadow-noc-glow flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
           >
-            <Sparkles className="w-4 h-4 text-mnnit-gold" />
+            <Sparkles className="w-3.5 h-3.5 text-noc-cyan" />
             <span>
               {isSummarizing
-                ? 'Summarizing transcript...'
+                ? 'COMPILING DIAGNOSTIC SUMMARY...'
                 : hasAutoFilled
-                  ? 'Update form from chat'
-                  : 'Log request using AI'}
+                  ? 'RE-POPULATE TICKET FROM TRACE'
+                  : 'AUTO-POPULATE TICKET WITH AI'}
             </span>
           </button>
         )}

@@ -1,9 +1,6 @@
-// MODULE: Complaint Management (Part 2) - this file belongs to the code for this module.
-// ComplaintList component rendering paginated complaint tables with search and filters.
-
 import React from 'react';
 import { StatusBadge } from './StatusBadge';
-import { Calendar, User, MapPin, ChevronRight } from 'lucide-react';
+import { Calendar, User, MapPin, ChevronRight, Activity, AlertCircle } from 'lucide-react';
 
 interface ComplaintListProps {
   complaints: any[];
@@ -18,91 +15,107 @@ export const ComplaintList: React.FC<ComplaintListProps> = ({
 }) => {
   if (complaints.length === 0) {
     return (
-      <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 shadow-sm my-4">
-        <p className="text-sm font-semibold text-slate-500">No complaints found matching criteria.</p>
+      <div className="bg-noc-panel rounded-xl p-12 text-center border border-noc-border shadow-noc my-4">
+        <Activity className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+        <p className="text-sm font-mono text-slate-400">NO ACTIVE INCIDENTS MATCHING SEARCH CRITERIA</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden my-4">
+    <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc overflow-hidden my-4">
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse text-xs">
+        <table className="w-full text-left border-collapse text-xs font-sans">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
-              <th className="p-3">Ticket ID</th>
-              <th className="p-3">Priority</th>
-              <th className="p-3">Student Name</th>
-              <th className="p-3">Problem Type</th>
-              <th className="p-3">Location</th>
-              <th className="p-3">Affected Users</th>
-              <th className="p-3">Status</th>
-              {showTechnician && <th className="p-3">Assigned Tech</th>}
-              <th className="p-3">Registered At</th>
-              <th className="p-3 text-right">Action</th>
+            <tr className="bg-noc-surface border-b border-noc-border text-slate-400 font-mono font-semibold uppercase tracking-wider text-[11px]">
+              <th className="p-3.5">Ticket ID</th>
+              <th className="p-3.5">Priority</th>
+              <th className="p-3.5">Student Name</th>
+              <th className="p-3.5">Problem Type</th>
+              <th className="p-3.5">Location</th>
+              <th className="p-3.5">Impact</th>
+              <th className="p-3.5">Lifecycle Status</th>
+              {showTechnician && <th className="p-3.5">Assigned Tech</th>}
+              <th className="p-3.5">Logged At</th>
+              <th className="p-3.5 text-right">Dispatch</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-noc-border/60">
             {complaints.map((c) => {
               const priority = c.priority || 'MEDIUM';
               const pClass =
                 priority === 'CRITICAL'
-                  ? 'bg-red-100 text-red-800 border-red-200'
+                  ? 'bg-noc-rose/15 text-noc-rose border-noc-rose/30'
                   : priority === 'HIGH'
-                  ? 'bg-amber-100 text-amber-800 border-amber-200'
+                  ? 'bg-noc-amber/15 text-noc-amber border-noc-amber/30'
                   : priority === 'MEDIUM'
-                  ? 'bg-blue-100 text-blue-800 border-blue-200'
-                  : 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                  ? 'bg-noc-highlight/15 text-noc-accent border-noc-highlight/30'
+                  : 'bg-noc-emerald/15 text-noc-emerald border-noc-emerald/30';
 
               return (
                 <tr
                   key={c.ticket_id}
                   onClick={() => onSelect(c.ticket_id)}
-                  className="hover:bg-slate-50/80 cursor-pointer transition-colors"
+                  className="hover:bg-noc-surface/80 cursor-pointer transition-colors group"
                 >
-                  <td className="p-3 font-mono font-bold text-blue-700">#{c.ticket_id}</td>
-                  <td className="p-3">
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase ${pClass}`}>
+                  <td className="p-3.5 font-mono font-bold text-noc-accent">#{c.ticket_id}</td>
+                  <td className="p-3.5">
+                    <span
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase ${pClass}`}
+                    >
                       {priority}
                     </span>
                   </td>
-                  <td className="p-3 font-semibold text-slate-800">
+                  <td className="p-3.5 font-semibold text-slate-200">
                     <div className="flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                       <span>{c.name}</span>
                     </div>
                   </td>
-                  <td className="p-3 font-medium text-slate-700">{c.problem_type.replace(/_/g, ' ')}</td>
-                  <td className="p-3 text-slate-600">
+                  <td className="p-3.5 font-medium text-slate-300 font-mono text-[11px]">
+                    {c.problem_type.replace(/_/g, ' ')}
+                  </td>
+                  <td className="p-3.5 text-slate-300">
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>{c.location} ({c.address_room})</span>
+                      <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <span>
+                        {c.location} ({c.address_room})
+                      </span>
                     </div>
                   </td>
-                  <td className="p-3 font-medium text-slate-700">
-                    <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono text-[11px]">
+                  <td className="p-3.5 font-mono text-[11px]">
+                    <span className="bg-noc-bg text-slate-300 px-2 py-0.5 rounded border border-noc-border">
                       {c.affected_users_count || 1} user(s)
                     </span>
                   </td>
-                  <td className="p-3">
+                  <td className="p-3.5">
                     <StatusBadge status={c.status} />
                   </td>
                   {showTechnician && (
-                    <td className="p-3 font-medium text-slate-700">
-                      {c.assigned_technician_name || <span className="text-slate-400 italic">Unassigned</span>}
+                    <td className="p-3.5 font-medium text-slate-300">
+                      {c.assigned_technician_name ? (
+                        <span className="text-white font-semibold">{c.assigned_technician_name}</span>
+                      ) : (
+                        <span className="text-slate-500 italic font-mono text-[11px]">UNASSIGNED</span>
+                      )}
                     </td>
                   )}
-                  <td className="p-3 text-slate-500">
+                  <td className="p-3.5 text-slate-400 font-mono text-[11px]">
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>{new Date(c.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</span>
+                      <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <span>
+                        {new Date(c.created_at).toLocaleString('en-IN', {
+                          timeZone: 'Asia/Kolkata',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
                     </div>
                   </td>
-                  <td className="p-3 text-right">
-                    <button className="inline-flex items-center gap-0.5 text-blue-600 hover:text-blue-800 font-semibold text-xs">
-                      <span>View</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                  <td className="p-3.5 text-right">
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-noc-accent group-hover:translate-x-0.5 transition-all inline-block" />
                   </td>
                 </tr>
               );

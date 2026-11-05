@@ -1,7 +1,5 @@
-// MODULE: Complaint Management (Part 2) - this file belongs to the code for this module.
-// Technician Workbench page for resolving assigned complaints, issuing stock items, and viewing rating feedback.
-
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   fetchTechnicianComplaints,
   fetchTechnicianComplaintDetail,
@@ -21,8 +19,12 @@ import {
   Trash2,
   LogOut,
   AlertCircle,
-  ArrowLeft
+  ArrowLeft,
+  Activity,
+  Server,
+  Award
 } from 'lucide-react';
+import logo from '../../assets/logo.jpeg';
 
 export const TechnicianDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'open' | 'closed' | 'ratings'>('open');
@@ -57,7 +59,9 @@ export const TechnicianDashboard: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    fetchStockItems().then((items:any[]) => setStockItems(items)).catch(() => {});
+    fetchStockItems()
+      .then((items: any[]) => setStockItems(items))
+      .catch(() => {});
   }, [activeTab]);
 
   const handleSelectComplaint = async (ticketId: string) => {
@@ -125,30 +129,41 @@ export const TechnicianDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      {/* Top Header */}
-      <header className="bg-mnnit-blue text-white shadow-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
+      {/* Top NOC Header */}
+      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold text-mnnit-gold border border-white/20 text-sm">
-              MNNIT
-            </div>
+            <img
+              src={logo}
+              alt="MNNIT Allahabad Logo"
+              className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
+            />
             <div>
-              <h1 className="text-base font-bold">Technician Workbench</h1>
-              <p className="text-[11px] text-slate-200">On-Site Network Repair & Stock Dispatch</p>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
+                  TECHNICIAN WORKBENCH // FIELD OPERATIONS
+                </h1>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-noc-emerald/10 text-noc-emerald border border-noc-emerald/30 font-bold uppercase">
+                  ONLINE
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-mono">
+                On-Site Hardware Repair, Diagnostics & Spares Log
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <a
-              href="/admin/network-assets"
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold border border-white/20 transition-colors"
+            <Link
+              to="/admin/network-assets"
+              className="hidden sm:inline-flex px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover rounded-lg text-xs font-mono text-slate-200 border border-noc-border transition-colors"
             >
               Network Assets (Read-Only)
-            </a>
+            </Link>
             <button
               onClick={handleLogout}
-              className="p-2 bg-white/10 hover:bg-red-500/80 rounded-xl text-white transition-colors"
+              className="p-2 bg-noc-surface hover:bg-noc-rose/20 text-slate-300 hover:text-noc-rose rounded-lg border border-noc-border transition-colors cursor-pointer"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
@@ -157,6 +172,7 @@ export const TechnicianDashboard: React.FC = () => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
         {selectedComplaint ? (
           <div className="space-y-6">
@@ -172,23 +188,25 @@ export const TechnicianDashboard: React.FC = () => {
 
             {/* Resolution Form (if assigned and open) */}
             {(selectedComplaint.status === 'ASSIGNED' || selectedComplaint.status === 'DIAGNOSED') && (
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
-                <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <Wrench className="w-4 h-4 text-emerald-600" />
-                  Submit Diagnosis & Solution (Ticket #{selectedComplaint.ticket_id})
-                </h2>
+              <div className="bg-noc-panel rounded-xl p-6 border border-noc-border shadow-noc space-y-5">
+                <div className="flex items-center gap-2 border-b border-noc-border pb-3">
+                  <Wrench className="w-5 h-5 text-noc-emerald" />
+                  <h2 className="text-sm font-bold font-mono tracking-wide text-white uppercase">
+                    RECORD ON-SITE DIAGNOSIS & RESOLUTION // TICKET #{selectedComplaint.ticket_id}
+                  </h2>
+                </div>
 
                 {resolveError && (
-                  <div className="p-3 bg-red-50 text-red-700 text-xs flex items-center gap-2 rounded-xl border border-red-100">
+                  <div className="p-3 bg-noc-rose/10 text-noc-rose text-xs flex items-center gap-2 rounded-xl border border-noc-rose/30 font-mono">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>{resolveError}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleResolveSubmit} className="space-y-4">
+                <form onSubmit={handleResolveSubmit} className="space-y-5 font-sans">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Technical Diagnosis <span className="text-red-500">*</span>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase">
+                      Technical Diagnosis Log <span className="text-noc-rose">*</span>
                     </label>
                     <textarea
                       value={diagnosis}
@@ -196,13 +214,13 @@ export const TechnicianDashboard: React.FC = () => {
                       rows={3}
                       placeholder="e.g. Blown RJ45 keystone jack in wall socket due to physical cable pull"
                       required
-                      className="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border resize-none transition-colors focus:outline-none focus:border-noc-accent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Solution Provided (Will be emailed to student) <span className="text-red-500">*</span>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase">
+                      Action Taken / Solution Provided (Transmitted to Student) <span className="text-noc-rose">*</span>
                     </label>
                     <textarea
                       value={solution}
@@ -210,18 +228,20 @@ export const TechnicianDashboard: React.FC = () => {
                       rows={3}
                       placeholder="e.g. Replaced RJ45 keystone jack in Room 214 and tested LAN connection at 1Gbps speed."
                       required
-                      className="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border resize-none transition-colors focus:outline-none focus:border-noc-accent"
                     />
                   </div>
 
                   {/* Stock Usage Selector */}
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="space-y-3 pt-2 border-t border-noc-border">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-semibold text-slate-700">Stock Inventory Used (Optional)</label>
+                      <label className="text-xs font-semibold text-slate-300 font-mono uppercase">
+                        Warehouse Stock / Spares Utilized (Optional)
+                      </label>
                       <button
                         type="button"
                         onClick={handleAddItem}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1"
+                        className="px-3 py-1 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 rounded-lg text-xs font-mono font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Stock Item</span>
@@ -236,13 +256,15 @@ export const TechnicianDashboard: React.FC = () => {
                               value={item.stock_item_id}
                               onChange={(e) => {
                                 const newId = e.target.value;
-                                setItemsUsed((prev) => prev.map((it, i) => (i === idx ? { ...it, stock_item_id: newId } : it)));
+                                setItemsUsed((prev) =>
+                                  prev.map((it, i) => (i === idx ? { ...it, stock_item_id: newId } : it))
+                                );
                               }}
-                              className="flex-1 p-2 text-xs border border-slate-300 rounded-xl bg-white"
+                              className="flex-1 bg-noc-bg text-xs text-slate-100 p-2.5 rounded-lg border border-noc-border font-mono focus:outline-none focus:border-noc-accent"
                             >
                               {stockItems.map((st) => (
-                                <option key={st._id} value={st._id}>
-                                  {st.item_type} ({st.quantity_available} available)
+                                <option key={st._id} value={st._id} className="bg-noc-panel text-slate-200">
+                                  {st.item_type} ({st.quantity_available} in stock)
                                 </option>
                               ))}
                             </select>
@@ -253,15 +275,17 @@ export const TechnicianDashboard: React.FC = () => {
                               value={item.quantity}
                               onChange={(e) => {
                                 const q = parseInt(e.target.value) || 1;
-                                setItemsUsed((prev) => prev.map((it, i) => (i === idx ? { ...it, quantity: q } : it)));
+                                setItemsUsed((prev) =>
+                                  prev.map((it, i) => (i === idx ? { ...it, quantity: q } : it))
+                                );
                               }}
-                              className="w-20 p-2 text-xs border border-slate-300 rounded-xl"
+                              className="w-24 bg-noc-bg text-xs text-slate-100 p-2.5 rounded-lg border border-noc-border font-mono text-center focus:outline-none focus:border-noc-accent"
                             />
 
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(idx)}
-                              className="p-2 text-red-500 hover:bg-red-50 rounded-xl"
+                              className="p-2 text-noc-rose hover:bg-noc-rose/10 rounded-lg border border-noc-border transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -274,9 +298,9 @@ export const TechnicianDashboard: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3.5 px-4 bg-noc-emerald hover:bg-emerald-600 disabled:opacity-50 text-white font-mono font-bold rounded-xl shadow-noc-emerald transition-all flex items-center justify-center gap-2 text-xs tracking-wider uppercase cursor-pointer"
                   >
-                    {submitting ? 'Submitting Resolution...' : 'Submit Resolution & Notify Student'}
+                    {submitting ? 'Transmitting Resolution...' : 'Submit Resolution & Notify Student'}
                   </button>
                 </form>
               </div>
@@ -284,80 +308,89 @@ export const TechnicianDashboard: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Sub Navigation */}
-            <div className="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 text-xs font-semibold">
+            {/* Sub Navigation Tabs */}
+            <div className="bg-noc-panel p-1.5 rounded-xl border border-noc-border shadow-noc flex items-center gap-2 text-xs font-mono font-semibold">
               <button
                 onClick={() => setActiveTab('open')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'open' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'open'
+                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
                 <Inbox className="w-4 h-4" />
-                <span>My Assigned Complaints (Open)</span>
+                <span>My Work Orders (Open)</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('closed')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'closed' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'closed'
+                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>My Resolved History</span>
+                <span>Resolved History</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('ratings')}
-                className={`px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'ratings' ? 'bg-mnnit-blue text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  activeTab === 'ratings'
+                    ? 'bg-noc-highlight text-white shadow-noc-glow'
+                    : 'text-slate-400 hover:text-white hover:bg-noc-surface'
                 }`}
               >
-                <Star className="w-4 h-4 text-mnnit-gold" />
-                <span>My Service Ratings & Position</span>
+                <Star className="w-4 h-4 text-noc-gold" />
+                <span>Quality Ratings & Position</span>
               </button>
             </div>
 
             {/* Content Tabs */}
             {activeTab === 'ratings' ? (
               myRatings && (
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                      <span className="text-amber-800 block">Average Rating Score</span>
-                      <div className="flex items-center gap-2 mt-1">
+                <div className="bg-noc-panel rounded-xl border border-noc-border shadow-noc p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                    <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                      <span className="text-slate-400 uppercase tracking-wider block">Average Rating Score</span>
+                      <div className="flex items-center gap-2 mt-2">
                         <StarRating value={Math.round(myRatings.average_rating || 0)} readOnly size={20} />
-                        <span className="text-2xl font-bold text-amber-900">{myRatings.average_rating || 'N/A'}</span>
+                        <span className="text-2xl font-bold text-noc-gold">{myRatings.average_rating || 'N/A'}</span>
                       </div>
                     </div>
 
-                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                      <span className="text-blue-800 block">Total Ratings Received</span>
-                      <span className="text-2xl font-bold text-blue-900 mt-1 block">{myRatings.rating_count}</span>
+                    <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                      <span className="text-slate-400 uppercase tracking-wider block">Total Ratings Received</span>
+                      <span className="text-2xl font-bold text-noc-accent mt-2 block">{myRatings.rating_count}</span>
                     </div>
 
-                    <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
-                      <span className="text-purple-800 block">Leaderboard Rank Position</span>
-                      <span className="text-2xl font-bold text-purple-900 mt-1 block">{myRatings.rank_position}</span>
+                    <div className="bg-noc-surface p-4 rounded-xl border border-noc-border">
+                      <span className="text-slate-400 uppercase tracking-wider block">Leaderboard Rank</span>
+                      <span className="text-2xl font-bold text-purple-400 mt-2 block">#{myRatings.rank_position}</span>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-2 mb-3 text-xs">
-                      Anonymous Student Feedback History
+                    <h3 className="font-bold font-mono uppercase text-slate-300 border-b border-noc-border pb-2 mb-3 text-xs tracking-wider">
+                      STUDENT QUALITY AUDIT LOG
                     </h3>
                     {myRatings.ratings.length === 0 ? (
-                      <p className="text-xs text-slate-400 italic">No rating feedback received yet.</p>
+                      <p className="text-xs text-slate-500 italic font-mono">No rating feedback received yet.</p>
                     ) : (
                       <div className="space-y-3">
                         {myRatings.ratings.map((r: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+                          <div
+                            key={idx}
+                            className="p-3.5 bg-noc-bg rounded-lg border border-noc-border text-xs space-y-1"
+                          >
                             <div className="flex items-center justify-between">
                               <StarRating value={r.rating} readOnly size={16} />
-                              <span className="text-[11px] text-slate-400">
+                              <span className="text-[11px] text-slate-500 font-mono">
                                 {new Date(r.created_at).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}
                               </span>
                             </div>
-                            {r.feedback && <p className="text-slate-700 italic pt-1">"{r.feedback}"</p>}
+                            {r.feedback && <p className="text-slate-300 italic pt-1 font-sans">"{r.feedback}"</p>}
                           </div>
                         ))}
                       </div>
@@ -371,6 +404,11 @@ export const TechnicianDashboard: React.FC = () => {
           </>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
+        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
+      </footer>
     </div>
   );
 };

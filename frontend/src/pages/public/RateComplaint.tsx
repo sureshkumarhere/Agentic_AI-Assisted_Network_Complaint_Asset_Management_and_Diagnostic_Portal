@@ -1,11 +1,18 @@
-// MODULE: Complaint Management (Part 2) - this file belongs to the code for this module.
-// Public RateComplaint page allowing students to submit 1-5 star service quality rating.
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchTokenInfo, submitRating } from '../../api/complaints';
 import { StarRating } from '../../components/complaints/StarRating';
-import { Star, CheckCircle2, AlertCircle, ShieldCheck, Shield } from 'lucide-react';
+import {
+  Star,
+  CheckCircle2,
+  AlertCircle,
+  ShieldCheck,
+  Shield,
+  Home,
+  Award,
+  Send
+} from 'lucide-react';
+import logo from '../../assets/logo.jpeg';
 
 export const RateComplaint: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -41,126 +48,155 @@ export const RateComplaint: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <header className="bg-mnnit-blue text-white shadow-lg sticky top-0 z-30">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold text-mnnit-gold border border-white/20 text-sm">
-                MNNIT
-              </div>
-              <div>
-                <h1 className="text-base sm:text-lg font-bold tracking-tight">MNNIT Allahabad</h1>
-                <p className="text-[11px] text-slate-200">Network Complaint & AI Diagnosis Portal</p>
-              </div>
-            </div>
-          </div>
-        </header>
-        <div className="flex-1 flex items-center justify-center p-4">
-          <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      {/* College Header */}
-      <header className="bg-mnnit-blue text-white shadow-lg sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col noc-grid">
+      {/* NOC Header */}
+      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold text-mnnit-gold border border-white/20 text-sm">
-              MNNIT
-            </div>
+            <img
+              src={logo}
+              alt="MNNIT Allahabad Logo"
+              className="w-10 h-10 rounded-xl object-contain bg-white p-0.5 border border-noc-border shadow-sm"
+            />
             <div>
-              <h1 className="text-base sm:text-lg font-bold tracking-tight">
-                MNNIT Allahabad
+              <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-white font-mono uppercase">
+                MNNIT ALLAHABAD // NOC PORTAL
               </h1>
-              <p className="text-[11px] text-slate-200">Network Complaint & AI Diagnosis Portal</p>
+              <p className="text-[11px] text-slate-400 font-mono">
+                Technician Service Quality Audit
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link
-              to="/login"
-              className="text-xs font-semibold text-slate-200 hover:text-white flex items-center gap-1 transition-colors"
-            >
-              <Shield className="w-3.5 h-3.5 text-mnnit-gold" />
-              <span>Staff Login</span>
-            </Link>
-          </div>
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border text-slate-200 text-xs font-mono rounded-lg transition-colors"
+          >
+            <Home className="w-3.5 h-3.5 text-noc-accent" />
+            <span>Student View</span>
+          </Link>
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden w-full max-w-lg p-8">
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Star className="w-6 h-6 fill-amber-500" />
-          </div>
-          <h1 className="text-xl font-bold text-slate-900">MNNIT IT Services</h1>
-          <p className="text-xs text-slate-500 mt-1">Rate Technician Service Quality</p>
-        </div>
-
-        {resultMessage ? (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center space-y-3">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-            <h2 className="text-sm font-bold text-emerald-900">Rating Submitted</h2>
-            <p className="text-xs text-emerald-800">{resultMessage}</p>
-            <Link to="/" className="inline-block mt-2 text-xs font-semibold text-blue-600 hover:underline">
-              Return to Home
-            </Link>
-          </div>
-        ) : error || !tokenInfo?.is_valid ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center space-y-3">
-            <AlertCircle className="w-10 h-10 text-amber-600 mx-auto" />
-            <h2 className="text-sm font-bold text-amber-900">Link Unavailable</h2>
-            <p className="text-xs text-amber-800">
-              {error || (tokenInfo?.is_used ? 'This rating link has already been used.' : 'This rating link has expired.')}
+      {/* Main Container */}
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-lg w-full bg-noc-panel border border-noc-border rounded-2xl shadow-noc overflow-hidden">
+          {/* Header Panel */}
+          <div className="bg-noc-surface px-6 py-6 border-b border-noc-border text-center">
+            <div className="w-12 h-12 bg-noc-gold/15 text-noc-gold border border-noc-gold/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Award className="w-6 h-6" />
+            </div>
+            <h2 className="text-base font-bold text-white tracking-wide font-mono uppercase">
+              RATE ON-SITE REPAIR QUALITY
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 font-sans">
+              Help calibrate technician dispatch rankings and campus service SLA
             </p>
-            <Link to="/" className="inline-block mt-2 text-xs font-semibold text-blue-600 hover:underline">
-              Return to Home
-            </Link>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2 text-center">
-              <span className="text-slate-400 block">Assigned Technician:</span>
-              <span className="font-bold text-slate-800 text-sm">{tokenInfo.technician_name || 'Network Technician'}</span>
-            </div>
 
-            <div className="flex flex-col items-center gap-2 py-2">
-              <label className="text-xs font-semibold text-slate-700">Select Rating (1 to 5 Stars)</label>
-              <StarRating value={rating} onChange={setRating} size={32} />
-            </div>
+          <div className="p-6 sm:p-8 space-y-6">
+            {loading ? (
+              <div className="p-8 text-center text-slate-400 font-mono">
+                <span className="w-6 h-6 border-2 border-noc-accent border-t-transparent rounded-full animate-spin inline-block mb-3" />
+                <div>LOADING TICKET AUDIT PARAMETERS...</div>
+              </div>
+            ) : resultMessage ? (
+              <div className="bg-noc-emerald/10 border border-noc-emerald/30 rounded-xl p-6 text-center space-y-3">
+                <CheckCircle2 className="w-10 h-10 text-noc-emerald mx-auto" />
+                <h3 className="text-sm font-mono font-bold text-white uppercase">FEEDBACK REGISTERED</h3>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">{resultMessage}</p>
+                <div className="pt-2">
+                  <Link
+                    to="/"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-xs font-mono text-white transition-colors"
+                  >
+                    <Home className="w-3.5 h-3.5" />
+                    <span>Return to Home</span>
+                  </Link>
+                </div>
+              </div>
+            ) : error || !tokenInfo?.is_valid ? (
+              <div className="bg-noc-amber/10 border border-noc-amber/30 rounded-xl p-6 text-center space-y-3">
+                <AlertCircle className="w-10 h-10 text-noc-amber mx-auto" />
+                <h3 className="text-sm font-mono font-bold text-white uppercase">TOKEN UNAVAILABLE</h3>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  {error || (tokenInfo?.is_used ? 'This rating link has already been submitted.' : 'This rating link has expired.')}
+                </p>
+                <div className="pt-2">
+                  <Link
+                    to="/"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-xs font-mono text-white transition-colors"
+                  >
+                    <Home className="w-3.5 h-3.5" />
+                    <span>Return to Home</span>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Ticket Details Panel */}
+                <div className="bg-noc-bg p-4 rounded-xl border border-noc-border space-y-2 text-xs font-mono">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">TICKET IDENTIFIER:</span>
+                    <span className="font-bold text-noc-accent">#{tokenInfo.ticket_id}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">TECHNICIAN:</span>
+                    <span className="text-white font-semibold">{tokenInfo.technician_name || 'Zonal Engineer'}</span>
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Written Feedback (Optional)</label>
-              <textarea
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                rows={3}
-                maxLength={1000}
-                placeholder="How satisfied were you with the response speed and solution quality?"
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-            </div>
+                {/* Star Rating Section */}
+                <div className="text-center py-2">
+                  <label className="block text-xs font-mono uppercase text-slate-300 mb-3 font-semibold">
+                    Select Service Rating (1-5 Stars)
+                  </label>
+                  <div className="flex justify-center p-3 bg-noc-bg rounded-xl border border-noc-border inline-block mx-auto">
+                    <StarRating value={rating} onChange={(val) => setRating(val)} size={32} />
+                  </div>
+                </div>
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-xl shadow transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {submitting ? 'Submitting...' : 'Submit Service Rating'}
-            </button>
-          </form>
-        )}
+                {/* Written Feedback */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 font-mono uppercase">
+                    Service Review & Comments
+                  </label>
+                  <textarea
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    rows={3}
+                    placeholder="Rate technician promptness, technical diagnosis, and politeness..."
+                    className="w-full bg-noc-bg text-sm text-slate-100 px-3.5 py-2.5 rounded-lg border border-noc-border resize-none transition-colors focus:outline-none focus:border-noc-accent"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full py-3.5 px-4 bg-noc-highlight hover:bg-blue-600 disabled:opacity-50 text-white font-mono font-bold rounded-xl shadow-noc-glow transition-all flex items-center justify-center gap-2 text-xs tracking-wider uppercase cursor-pointer"
+                >
+                  {submitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Transmitting Audit Feedback...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Submit Quality Rating</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        © {new Date().getFullYear()} MNNIT Allahabad IT Services. All Rights Reserved.
+      {/* Footer */}
+      <footer className="bg-noc-panel border-t border-noc-border py-4 text-center text-xs text-slate-500 font-mono">
+        © {new Date().getFullYear()} MNNIT ALLAHABAD IT SERVICES & NETWORK OPERATIONS // COMPUTER CENTRE
       </footer>
     </div>
   );

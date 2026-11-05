@@ -24,27 +24,27 @@ export const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-200">
+    <form onSubmit={handleSubmit} className="p-3 bg-noc-panel border-t border-noc-border">
       <div className="flex items-end gap-2">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={disabled ? '10-message limit reached' : 'Ask about Wi-Fi, LAN, IP, proxy... (Enter to send)'}
+          placeholder={disabled ? 'Session trace limit reached' : 'Describe symptoms or paste ping/traceroute output...'}
           disabled={disabled}
           maxLength={500}
           rows={1}
-          className="flex-1 min-h-[44px] max-h-32 p-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+          className="flex-1 min-h-[40px] max-h-28 p-2 text-xs font-mono bg-noc-bg border border-noc-border rounded-lg text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-noc-accent resize-none disabled:bg-noc-surface disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
         />
         <button
           type="submit"
           disabled={disabled || !text.trim()}
-          className="h-11 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium flex items-center justify-center transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed shrink-0"
+          className="h-10 px-3.5 bg-noc-accent hover:bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 shadow-noc-glow"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-3.5 h-3.5" />
         </button>
       </div>
-      <div className="flex justify-between items-center mt-1 text-[11px] text-slate-400 px-1">
+      <div className="flex justify-between items-center mt-1.5 text-[10px] font-mono text-slate-500 px-1">
         <span>Shift+Enter for newline</span>
         <span>{text.length}/500</span>
       </div>

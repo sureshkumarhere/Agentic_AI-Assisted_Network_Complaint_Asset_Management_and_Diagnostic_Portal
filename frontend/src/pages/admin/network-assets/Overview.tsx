@@ -28,32 +28,40 @@ export const Overview: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-noc-bg text-slate-100 flex flex-col font-sans">
       {/* Top Bar Header */}
-      <header className="bg-mnnit-blue text-white shadow-md">
+      <header className="bg-noc-panel border-b border-noc-border">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+            <Link to="/admin" className="p-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border rounded-lg text-slate-300 hover:text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <h1 className="text-lg font-bold">Network Asset and Stock Management</h1>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm font-mono font-bold tracking-wider text-slate-100 uppercase">
+                  Network Asset &amp; Hardware Inventory
+                </h1>
+                <span className="w-2 h-2 rounded-full bg-noc-emerald radar-live" />
+              </div>
+              <p className="text-[11px] font-mono text-slate-400">Campus switch fabric, access points, router nodes</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <a
               href="/api/admin/network-assets/reports/export"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-noc-surface hover:bg-noc-border border border-noc-border text-slate-300 hover:text-white text-xs font-mono font-medium rounded-lg flex items-center gap-1.5 transition-colors"
             >
-              <FileSpreadsheet className="w-4 h-4" />
+              <FileSpreadsheet className="w-4 h-4 text-noc-cyan" />
               <span>Export CSV</span>
             </a>
             <Link
               to="/admin/network-assets/new"
-              className="px-3 py-1.5 bg-mnnit-gold hover:bg-amber-400 text-mnnit-blue text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3 py-1.5 bg-noc-accent hover:bg-blue-600 text-white text-xs font-mono font-semibold rounded-lg flex items-center gap-1.5 transition-colors shadow-noc-glow"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Asset</span>
+              <span>Register Asset</span>
             </Link>
           </div>
         </div>
@@ -63,89 +71,108 @@ export const Overview: React.FC = () => {
       <NetworkAssetsNav />
 
       {/* Main Overview Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
         {isLoading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">Loading summary metrics...</div>
+          <div className="p-12 text-center text-slate-500 font-mono text-sm">Querying hardware telemetry...</div>
         ) : (
           <div className="space-y-8">
             {/* Top Metric Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Assets</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">{summary?.total_assets || 0}</p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Total Assets</p>
+                  <p className="text-2xl font-mono font-bold text-slate-100 mt-1">{summary?.total_assets || 0}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-cyan flex items-center justify-center">
                   <Server className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Spare Available</p>
-                  <p className="text-2xl font-bold text-emerald-600 mt-1">{summary?.spare_total || 0}</p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Spare Available</p>
+                  <p className="text-2xl font-mono font-bold text-noc-emerald mt-1">{summary?.spare_total || 0}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-emerald flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Faulty Hardware</p>
-                  <p className="text-2xl font-bold text-red-600 mt-1">{summary?.faulty_total || 0}</p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Faulty Units</p>
+                  <p className="text-2xl font-mono font-bold text-noc-rose mt-1">{summary?.faulty_total || 0}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-rose flex items-center justify-center">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Under Repair</p>
-                  <p className="text-2xl font-bold text-amber-600 mt-1">{summary?.under_repair_total || 0}</p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">In Maintenance</p>
+                  <p className="text-2xl font-mono font-bold text-noc-amber mt-1">{summary?.under_repair_total || 0}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-amber flex items-center justify-center">
                   <Wrench className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div className="bg-noc-panel p-5 rounded-xl border border-noc-border shadow-noc flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Low Stock Alerts</p>
-                  <p className="text-2xl font-bold text-indigo-600 mt-1">{summary?.low_stock_count || 0}</p>
+                  <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Low Stock SKUs</p>
+                  <p className="text-2xl font-mono font-bold text-noc-cyan mt-1">{summary?.low_stock_items?.length || 0}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-noc-surface border border-noc-border text-noc-cyan flex items-center justify-center">
                   <Boxes className="w-5 h-5" />
                 </div>
               </div>
             </div>
 
-            {/* Category Breakdown & Status Charts Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Category Counts */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h2 className="text-sm font-bold text-slate-800 border-b pb-3">Assets by Category</h2>
-                <div className="space-y-2.5">
-                  {Object.entries(summary?.by_category || {}).map(([cat, count]: [string, any]) => (
-                    <div key={cat} className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-700">{cat.replace(/_/g, ' ')}</span>
-                      <span className="px-2.5 py-1 rounded-full bg-slate-100 font-bold text-slate-800">{count}</span>
-                    </div>
-                  ))}
+            {/* Quick Actions and Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Asset Class Distribution */}
+              <div className="bg-noc-panel p-6 rounded-xl border border-noc-border shadow-noc">
+                <h2 className="text-xs font-mono font-semibold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Server className="w-4 h-4 text-noc-cyan" />
+                  Hardware Category Distribution
+                </h2>
+                <div className="space-y-3 font-mono text-xs">
+                  {summary?.by_type && Object.keys(summary.by_type).length > 0 ? (
+                    Object.entries(summary.by_type).map(([type, count]: [string, any]) => (
+                      <div key={type} className="flex items-center justify-between p-2.5 rounded bg-noc-surface/50 border border-noc-border/60">
+                        <span className="text-slate-300 uppercase">{type.replace(/_/g, ' ')}</span>
+                        <span className="font-bold text-noc-cyan">{count} units</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-slate-500 py-4 text-center">No hardware class records found.</div>
+                  )}
                 </div>
               </div>
 
-              {/* Status Counts */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h2 className="text-sm font-bold text-slate-800 border-b pb-3">Assets by Status</h2>
-                <div className="space-y-2.5">
-                  {Object.entries(summary?.by_status || {}).map(([st, count]: [string, any]) => (
-                    <div key={st} className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-700">{st.replace(/_/g, ' ')}</span>
-                      <span className="px-2.5 py-1 rounded-full bg-slate-100 font-bold text-slate-800">{count}</span>
-                    </div>
-                  ))}
+              {/* Low Stock Alerts */}
+              <div className="bg-noc-panel p-6 rounded-xl border border-noc-border shadow-noc">
+                <h2 className="text-xs font-mono font-semibold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Boxes className="w-4 h-4 text-noc-amber" />
+                  Spares &amp; Consumables Buffer Status
+                </h2>
+                <div className="space-y-3 font-mono text-xs">
+                  {summary?.low_stock_items && summary.low_stock_items.length > 0 ? (
+                    summary.low_stock_items.map((item: any) => (
+                      <div key={item.id} className="flex items-center justify-between p-2.5 rounded bg-noc-surface/50 border border-noc-border/60">
+                        <div>
+                          <p className="text-slate-200 font-medium">{item.item_name}</p>
+                          <p className="text-[10px] text-slate-500">Threshold: {item.minimum_stock_threshold} units</p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-noc-amber/20 text-noc-amber border border-noc-amber/40">
+                          {item.quantity_in_hand} remaining
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-slate-500 py-4 text-center">All consumable stock levels within safe tolerances.</div>
+                  )}
                 </div>
               </div>
             </div>

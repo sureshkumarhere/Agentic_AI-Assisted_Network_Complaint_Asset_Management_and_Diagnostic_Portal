@@ -21,11 +21,11 @@ export const ReferenceHome: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="bg-mnnit-blue text-white shadow-md">
+    <div className="min-h-screen bg-noc-bg text-slate-100 noc-grid">
+      <header className="bg-noc-panel/95 backdrop-blur-md border-b border-noc-border text-white shadow-noc sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/admin" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+            <Link to="/admin" className="p-1.5 bg-noc-surface hover:bg-noc-card-hover border border-noc-border rounded-lg text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <h1 className="text-lg font-bold">Reference Categories Knowledge Base</h1>
