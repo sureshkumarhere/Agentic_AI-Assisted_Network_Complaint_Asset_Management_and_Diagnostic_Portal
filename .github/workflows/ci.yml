@@ -1,0 +1,195 @@
+name: CI Checks
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # =========================================================================
+  # 1. BACKEND TEST SUITE & CODE QUALITY
+  # =========================================================================
+  backend:
+    name: "Backend Tests & Quality (Python 3.11)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "backend/requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Bytecode compilation check
+        run: python -m compileall -q backend scripts scripts_db
+
+      - name: Prepare environment configuration
+        run: cp .env.example .env
+
+      - name: Run Pytest Suite (All Modules)
+        env:
+          PYTHONPATH: .
+        run: |
+          python -m pytest \
+            backend/tests/test_unit.py \
+            backend/tests/test_complaint_management.py \
+            backend/tests/test_agentic_module2.py \
+            backend/tests/test_system_settings.py \
+            backend/tests/test_network_assets.py \
+            -v --tb=short
+
+  # =========================================================================
+  # 2. FRONTEND TYPECHECK & PRODUCTION BUILD
+  # =========================================================================
+  frontend:
+    name: "Frontend Build & Typecheck (Node.js 20)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install --legacy-peer-deps
+
+      - name: Run TypeScript typecheck (tsc)
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build production bundle (Vite)
+        working-directory: frontend
+        run: npm run build
+
+      - name: Verify build distribution assets
+        run: |
+          python -c "
+          import os
+          assert os.path.exists('frontend/dist/index.html'), 'Missing dist/index.html'
+          assert os.path.getsize('frontend/dist/index.html') > 0, 'index.html is empty'
+          assets = os.listdir('frontend/dist/assets')
+          js_files = [f for f in assets if f.endswith('.js')]
+          css_files = [f for f in assets if f.endswith('.css')]
+          assert len(js_files) > 0, 'No JS bundles found'
+          assert len(css_files) > 0, 'No CSS styles found'
+          print(f'✓ Verified {len(js_files)} JS bundles and {len(css_files)} CSS stylesheets')
+          "
+
+  # =========================================================================
+  # 3. SECURITY & CREDENTIAL LEAK AUDIT
+  # =========================================================================
+  security:
+    name: "Security Audit & Secret Scan"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify .env is gitignored
+        run: |
+          python -c "
+          with open('.gitignore') as f:
+              assert '.env' in f.read(), '.env MUST be in .gitignore'
+          print('✓ .env is properly gitignored')
+          "
+
+      - name: Scan for unmasked credentials and raw API keys
+        run: |
+          python -c "
+          import os, re
+          patterns = [
+              re.compile(r'AIza[0-9A-Za-z-_]{35}'),
+              re.compile(r'sk-[a-zA-Z0-9]{32,}'),
+          ]
+          leaks = []
+          for root, dirs, files in os.walk('.'):
+              dirs[:] = [d for d in dirs if d not in ('node_modules', '.git', 'v', '.pytest_cache', 'dist', 'chroma', 'ppt')]
+              for file in files:
+                  if file in ('.env', 'Agentic_AI_Assisted_Network_Complaint__Asset_Management_and_Diagnostic_Portal.zip', 'Agentic_AI_Network_Complaint_Portal_Report.docx'):
+                      continue
+                  if file.endswith(('.py', '.ts', '.tsx', '.json', '.md', '.yml', '.yaml')):
+                      p = os.path.join(root, file)
+                      with open(p, 'r', encoding='utf-8', errors='ignore') as f:
+                          text = f.read()
+                          for pat in patterns:
+                              if pat.search(text):
+                                  leaks.append((p, pat.pattern))
+          if leaks:
+              print(f'FAILED: Found potential secret leaks: {leaks}')
+              exit(1)
+          print('✓ Zero unmasked secrets found in tracked repository files')
+          "
+
+  # =========================================================================
+  # 4. DOCKER & INFRASTRUCTURE SPECIFICATION
+  # =========================================================================
+  docker:
+    name: "Docker & Infrastructure Verification"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose syntax
+        run: docker compose config
+
+      - name: Verify Dockerfile multi-stage build instructions
+        run: |
+          python -c "
+          with open('Dockerfile') as f:
+              content = f.read()
+          assert 'FROM node:20-alpine' in content, 'Missing Node frontend build stage'
+          assert 'FROM python:3.11-slim' in content, 'Missing Python backend runtime stage'
+          assert 'EXPOSE 8000' in content, 'Missing port 8000 exposure'
+          print('✓ Dockerfile multi-stage specifications verified successfully')
+          "
+
+      - name: Verify system files & environment template
+        run: |
+          python -c "
+          import os
+          required_files = [
+              'AGENTS.md',
+              '.env.example',
+              'README.md',
+              'docker-compose.yml',
+              'Dockerfile',
+              'backend/requirements.txt',
+              'frontend/package.json',
+              'backend/app/config.py',
+              'backend/app/main.py'
+          ]
+          for rf in required_files:
+              assert os.path.exists(rf), f'Missing required project file: {rf}'
+          with open('.env.example') as f:
+              env_text = f.read()
+          required_vars = ['MONGODB_URI', 'JWT_SECRET', 'AGENT_ENABLED', 'ALLOWED_EMAIL_DOMAIN']
+          for var in required_vars:
+              assert var in env_text, f'Missing {var} in .env.example'
+          print('✓ Core architecture files and required environment variables verified')
+          "

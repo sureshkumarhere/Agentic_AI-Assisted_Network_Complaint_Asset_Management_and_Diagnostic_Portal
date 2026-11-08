@@ -5,6 +5,12 @@ An AI-assisted web portal where students report network problems and troubleshoo
 ## 📊 Repository Metrics & Stats
 
 <p align="center">
+  <a href="https://github.com/sureshkumarhere/Semester_7_Project/actions/workflows/ci.yml">
+    <img src="https://github.com/sureshkumarhere/Semester_7_Project/actions/workflows/ci.yml/badge.svg" alt="CI Checks" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/languages/top/sureshkumarhere/Semester_7_Project?style=for-the-badge&color=blue" alt="Top Language" />
   <img src="https://img.shields.io/github/languages/count/sureshkumarhere/Semester_7_Project?style=for-the-badge&color=green" alt="Total Languages" />
   <img src="https://img.shields.io/github/commit-activity/m/sureshkumarhere/Semester_7_Project?style=for-the-badge&color=orange" alt="Commits per Month" />
